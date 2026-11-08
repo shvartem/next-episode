@@ -1,0 +1,48 @@
+.root {
+  --error: #c62828;
+
+  display: flex;
+  gap: 12px;
+  width: min(560px, 100% - 48px);
+  margin: 24px auto 0;
+  padding: 16px;
+  border: 1px solid var(--error);
+  border-radius: 8px;
+  text-align: left;
+
+  @media (prefers-color-scheme: dark) {
+    --error: #f87171;
+  }
+
+  @media (max-width: 600px) {
+    width: calc(100% - 24px);
+  }
+}
+
+.icon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: var(--error);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.content {
+  min-width: 0;
+}
+
+.title {
+  margin: 0 0 4px;
+  font-family: var(--heading);
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text-h);
+}
+
+.message {
+  margin: 0;
+  font-size: 15px;
+  overflow-wrap: anywhere;
+}

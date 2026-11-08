@@ -1,0 +1,7 @@
+.empty {
+  margin: 40px 0;
+  font-family: var(--heading);
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--text-h);
+}

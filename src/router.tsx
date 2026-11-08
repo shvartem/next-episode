@@ -1,14 +1,14 @@
 import { createBrowserRouter } from 'react-router'
-import RootLayout from './layouts/RootLayout.tsx'
-import HomePage from './pages/HomePage.tsx'
-import NotFoundPage from './pages/NotFoundPage.tsx'
+import RootLayout from './RootLayout/RootLayout'
+import SearchPage from './pages/SearchPage/SearchPage'
+import NotFoundPage from './pages/NotFoundPage/NotFoundPage'
 
 export const router = createBrowserRouter([
   {
     path: '/',
     element: <RootLayout />,
     children: [
-      { index: true, element: <HomePage /> },
+      { index: true, element: <SearchPage /> },
       { path: '*', element: <NotFoundPage /> },
     ],
   },

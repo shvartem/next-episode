@@ -1,6 +1,6 @@
 import {useState} from 'react';
 
-export const usePagination = <T>(items: T[], pageSize: number) => {
+export const usePaginatedList = <T>(items: T[], pageSize: number) => {
     const [page, setPageState] = useState(1);
 
     const pagesCount = Math.ceil(items.length / pageSize);

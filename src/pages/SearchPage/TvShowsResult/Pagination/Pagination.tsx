@@ -1,5 +1,7 @@
 import clsx from 'clsx';
 
+import {usePagination} from './usePagination';
+
 import styles from './Pagination.module.css';
 
 interface Props {
@@ -10,47 +12,37 @@ interface Props {
 }
 
 export const Pagination = (props: Props) => {
-    const {className, page, pagesCount, onChange} = props;
+    const {className, ...restProps} = props;
 
-    if (pagesCount <= 1) {
+    const {isVisible, pages, isFirst, isLast, handlePrevious, handleNext} = usePagination(restProps);
+
+    if (!isVisible) {
         return null;
     }
 
-    const pages = Array.from({length: pagesCount}, (_, index) => index + 1);
-
     return (
         <nav className={clsx(styles.root, className)} aria-label="Pagination">
-            <button
-                className={styles.button}
-                type="button"
-                onClick={() => onChange(page - 1)}
-                disabled={page === 1}
-            >
+            <button className={styles.button} type="button" onClick={handlePrevious} disabled={isFirst}>
                 Previous
             </button>
 
             <ol className={styles.pages}>
                 {pages.map((item) => (
-                    <li key={item}>
+                    <li key={item.value}>
                         <button
-                            className={clsx(styles.button, styles.page, item === page && styles.current)}
+                            className={clsx(styles.button, styles.page, item.isCurrent && styles.current)}
                             type="button"
-                            onClick={() => onChange(item)}
-                            aria-current={item === page ? 'page' : undefined}
-                            aria-label={`Page ${item}`}
+                            onClick={item.handleClick}
+                            aria-current={item.isCurrent ? 'page' : undefined}
+                            aria-label={`Page ${item.value}`}
                         >
-                            {item}
+                            {item.value}
                         </button>
                     </li>
                 ))}
             </ol>
 
-            <button
-                className={styles.button}
-                type="button"
-                onClick={() => onChange(page + 1)}
-                disabled={page === pagesCount}
-            >
+            <button className={styles.button} type="button" onClick={handleNext} disabled={isLast}>
                 Next
             </button>
         </nav>

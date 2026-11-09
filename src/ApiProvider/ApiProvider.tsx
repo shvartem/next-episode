@@ -1,6 +1,5 @@
-import {useMemo} from 'react';
-import {getTvShowsList} from '../api';
 import {ApiContext} from './useApi';
+import {useApiProvider} from './useApiProvider';
 
 interface Props {
     children: React.ReactNode;
@@ -9,12 +8,7 @@ interface Props {
 export const ApiProvider = (props: Props) => {
     const {children} = props;
 
-    const api = useMemo(
-        () => ({
-            getTvShowsList,
-        }),
-        [],
-    );
+    const {api} = useApiProvider();
 
     return <ApiContext.Provider value={api}>{children}</ApiContext.Provider>;
 };

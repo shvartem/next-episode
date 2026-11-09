@@ -2,6 +2,8 @@ import clsx from 'clsx';
 import type {TvShow} from '../../../api/types';
 import {EmptyList} from './EmptyList/EmptyList';
 import {TvShowsList} from './TvShowsList/TvShowsList';
+import {Pagination} from './Pagination/Pagination';
+import {useTvShowsResult} from './useTvShowsResult';
 
 import styles from './TvShowsResult.module.css';
 
@@ -11,13 +13,21 @@ interface Props {
 }
 
 export const TvShowsResult = (props: Props) => {
-    const {className, list} = props;
+    const {className, ...restProps} = props;
+
+    const {hasList, page, pageItems, pagesCount, setPage} = useTvShowsResult(restProps);
 
     return (
         <div className={clsx(styles.root, className)}>
-            {!list.length && <EmptyList />}
+            {!hasList && <EmptyList />}
 
-            {!!list.length && <TvShowsList list={list} />}
+            {hasList && (
+                <>
+                    <TvShowsList list={pageItems} />
+
+                    <Pagination page={page} pagesCount={pagesCount} onChange={setPage} />
+                </>
+            )}
         </div>
     );
 };

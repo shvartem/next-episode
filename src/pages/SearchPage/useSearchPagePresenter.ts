@@ -6,7 +6,7 @@ import {useApi} from '../../ApiProvider/useApi';
 const MIN_SEARCH_LENGTH = 3;
 const SUBMIT_DELAY = 1000;
 
-export const useSearchPage = () => {
+export const useSearchPagePresenter = () => {
     const [tvShowsList, setTvShowsList] = useState<TvShow[] | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);

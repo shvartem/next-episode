@@ -1,23 +1,19 @@
 import clsx from 'clsx';
-import type {TvShow} from '../../../api/types';
+
+import type {Props} from './types';
 import {EmptyList} from './EmptyList/EmptyList';
 import {GenreFilter} from './GenreFilter/GenreFilter';
 import {TvShowsList} from './TvShowsList/TvShowsList';
 import {Pagination} from './Pagination/Pagination';
-import {useTvShowsResult} from './useTvShowsResult';
+import {useTvShowsResultPresenter} from './useTvShowsResultPresenter';
 
 import styles from './TvShowsResult.module.css';
 
-interface Props {
-    className?: string;
-    list: TvShow[];
-}
-
 export const TvShowsResult = (props: Props) => {
-    const {className, ...restProps} = props;
+    const {className} = props;
 
     const {hasList, totalCount, genres, selectedGenre, handleGenreChange, page, pageItems, pagesCount, setPage} =
-        useTvShowsResult(restProps);
+        useTvShowsResultPresenter(props);
 
     return (
         <div className={clsx(styles.root, className)}>

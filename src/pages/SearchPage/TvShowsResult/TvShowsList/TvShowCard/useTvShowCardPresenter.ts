@@ -1,8 +1,4 @@
-import type {TvShow} from '../../../../../api/types';
-
-interface Props {
-    card: TvShow;
-}
+import type {Props} from './types';
 
 const getPlainText = (html: string) => {
     const htmlWithSpaces = html.replace(/<\/p>|<br\s*\/?>/gi, ' ');
@@ -10,7 +6,7 @@ const getPlainText = (html: string) => {
     return new DOMParser().parseFromString(htmlWithSpaces, 'text/html').body.textContent.trim();
 };
 
-export const useTvShowCard = (props: Props) => {
+export const useTvShowCardPresenter = (props: Props) => {
     const {card} = props;
     const {show} = card;
 

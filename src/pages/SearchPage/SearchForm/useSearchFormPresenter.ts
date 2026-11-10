@@ -1,6 +1,8 @@
 import {useState} from 'react';
 
-export const useSearchForm = (props: {onSubmit: (search: string) => void}) => {
+import type {Props} from './types';
+
+export const useSearchFormPresenter = (props: Props) => {
     const {onSubmit} = props;
 
     const [search, setSearch] = useState('');

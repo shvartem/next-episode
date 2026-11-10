@@ -3,10 +3,10 @@ import {TvShowsResult} from './TvShowsResult/TvShowsResult';
 import {SearchForm} from './SearchForm/SearchForm';
 import {Loader} from './Loader/Loader';
 import {Error} from './Error/Error';
-import {useSearchPage} from './useSearchPage';
+import {useSearchPagePresenter} from './useSearchPagePresenter';
 
 function SearchPage() {
-    const {error, isLoading, tvShowsList, searchHint, handleSearch} = useSearchPage();
+    const {error, isLoading, tvShowsList, searchHint, handleSearch} = useSearchPagePresenter();
 
     const renderContent = () => {
         if (isLoading) {

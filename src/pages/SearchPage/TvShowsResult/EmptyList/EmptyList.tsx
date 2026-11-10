@@ -1,8 +1,6 @@
-import styles from './EmptyList.module.css';
+import type {Props} from './types';
 
-interface Props {
-    className?: string;
-}
+import styles from './EmptyList.module.css';
 
 export const EmptyList = (props: Props) => {
     const {className} = props;

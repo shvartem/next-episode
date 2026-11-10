@@ -1,22 +1,14 @@
 import clsx from 'clsx';
 
-import type {GenreOption} from './types';
-import {useGenreFilter} from './useGenreFilter';
+import type {Props} from './types';
+import {useGenreFilterPresenter} from './useGenreFilterPresenter';
 
 import styles from './GenreFilter.module.css';
 
-interface Props {
-    className?: string;
-    genres: GenreOption[];
-    totalCount: number;
-    selectedGenre: string | null;
-    onChange: (genre: string | null) => void;
-}
-
 export const GenreFilter = (props: Props) => {
-    const {className, ...restProps} = props;
+    const {className} = props;
 
-    const {isVisible, totalCount, isAllSelected, handleReset, chips} = useGenreFilter(restProps);
+    const {isVisible, totalCount, isAllSelected, handleReset, chips} = useGenreFilterPresenter(props);
 
     if (!isVisible) {
         return null;

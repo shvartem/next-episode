@@ -1,14 +1,9 @@
 import clsx from 'clsx';
 
+import type {Props} from './types';
 import {TvShowCard} from './TvShowCard/TvShowCard';
-import type {TvShow} from '../../../../api/types';
 
 import styles from './TvShowsList.module.css';
-
-interface Props {
-    className?: string;
-    list: TvShow[];
-}
 
 export const TvShowsList = (props: Props) => {
     const {className, list} = props;

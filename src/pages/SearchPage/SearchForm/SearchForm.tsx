@@ -1,18 +1,14 @@
 import clsx from 'clsx';
 
-import styles from './SearchForm.module.css';
-import {useSearchForm} from './useSearchForm';
+import type {Props} from './types';
+import {useSearchFormPresenter} from './useSearchFormPresenter';
 
-interface Props {
-    className?: string;
-    hint: string;
-    onSubmit: (search: string) => void;
-}
+import styles from './SearchForm.module.css';
 
 export const SearchForm = (props: Props) => {
-    const {className, hint, ...restProps} = props;
+    const {className, hint} = props;
 
-    const {search, handleChange, handleSubmit} = useSearchForm(restProps);
+    const {search, handleChange, handleSubmit} = useSearchFormPresenter(props);
 
     return (
         <form className={clsx(styles.root, className)} onSubmit={handleSubmit} role="search">

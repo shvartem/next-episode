@@ -1,14 +1,10 @@
-import type {TvShow} from '../../../api/types';
+import type {Props} from './types';
 import {useGenreFilteredList} from './useGenreFilteredList';
 import {usePaginatedList} from './usePaginatedList';
 
 const PAGE_SIZE = 3;
 
-interface Props {
-    list: TvShow[];
-}
-
-export const useTvShowsResult = (props: Props) => {
+export const useTvShowsResultPresenter = (props: Props) => {
     const {list} = props;
 
     const {genres, selectedGenre, filteredList, setSelectedGenre} = useGenreFilteredList(list);

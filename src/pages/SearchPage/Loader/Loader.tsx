@@ -1,10 +1,8 @@
 import clsx from 'clsx';
 
-import styles from './Loader.module.css';
+import type {Props} from './types';
 
-interface Props {
-    className?: string;
-}
+import styles from './Loader.module.css';
 
 export const Loader = (props: Props) => {
     const {className} = props;

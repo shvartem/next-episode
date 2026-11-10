@@ -1,11 +1,8 @@
 import clsx from 'clsx';
 
-import styles from './Error.module.css';
+import type {Props} from './types';
 
-interface Props {
-    className?: string;
-    error: string;
-}
+import styles from './Error.module.css';
 
 export const Error = (props: Props) => {
     const {className, error} = props;

@@ -1,13 +1,6 @@
-import type {GenreOption} from './types';
+import type {Props} from './types';
 
-interface Props {
-    genres: GenreOption[];
-    totalCount: number;
-    selectedGenre: string | null;
-    onChange: (genre: string | null) => void;
-}
-
-export const useGenreFilter = (props: Props) => {
+export const useGenreFilterPresenter = (props: Props) => {
     const {genres, totalCount, selectedGenre, onChange} = props;
 
     const chips = genres.map((genre) => {

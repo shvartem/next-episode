@@ -1,10 +1,6 @@
-interface Props {
-    page: number;
-    pagesCount: number;
-    onChange: (page: number) => void;
-}
+import type {Props} from './types';
 
-export const usePagination = (props: Props) => {
+export const usePaginationPresenter = (props: Props) => {
     const {page, pagesCount, onChange} = props;
 
     const pages = Array.from({length: pagesCount}, (_, index) => {

@@ -1,20 +1,15 @@
 import clsx from 'clsx';
 
-import type {TvShow} from '../../../../../api/types';
-import {useTvShowCard} from './useTvShowCard';
+import type {Props} from './types';
+import {useTvShowCardPresenter} from './useTvShowCardPresenter';
 
 import styles from './TvShowCard.module.css';
 
-interface Props {
-    className?: string;
-    card: TvShow;
-}
-
 export const TvShowCard = (props: Props) => {
-    const {className, ...restProps} = props;
+    const {className} = props;
 
     const {name, url, posterUrl, posterAlt, details, rating, hasRating, genres, hasGenres, summary} =
-        useTvShowCard(restProps);
+        useTvShowCardPresenter(props);
 
     return (
         <article className={clsx(styles.root, className)}>

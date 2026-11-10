@@ -1,7 +1,7 @@
 import debounce from 'debounce';
 import {useEffect, useMemo, useState} from 'react';
-import type {TvShow} from '../../api/types';
-import {useApi} from '../../ApiProvider/useApi';
+import type {TvShow} from '~/api/types';
+import {useApi} from '~/ApiProvider/useApi';
 
 const MIN_SEARCH_LENGTH = 3;
 const SUBMIT_DELAY = 1000;

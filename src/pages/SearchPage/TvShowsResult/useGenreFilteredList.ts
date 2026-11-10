@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import type {TvShow} from '../../../api/types';
+import type {TvShow} from '~/api/types';
 import type {GenreOption} from './GenreFilter/types';
 
 const getGenreOptions = (list: TvShow[]): GenreOption[] => {

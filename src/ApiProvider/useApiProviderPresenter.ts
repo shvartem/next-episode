@@ -1,5 +1,5 @@
 import {useMemo} from 'react';
-import {getTvShowsList} from '../api';
+import {getTvShowsList} from '~/api';
 
 export const useApiProviderPresenter = () => {
     const api = useMemo(

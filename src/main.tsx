@@ -6,7 +6,7 @@ import 'modern-normalize/modern-normalize.css';
 import './index.css';
 
 import {router} from './router';
-import {ApiProvider} from './ApiProvider/ApiProvider';
+import {ApiProvider} from '~/ApiProvider/ApiProvider';
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>

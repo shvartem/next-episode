@@ -6,7 +6,7 @@ import {Error} from './Error/Error';
 import {useSearchPage} from './useSearchPage';
 
 function SearchPage() {
-    const {error, isLoading, tvShowsList, getTvShowsList} = useSearchPage();
+    const {error, isLoading, tvShowsList, searchHint, handleSearch} = useSearchPage();
 
     const renderContent = () => {
         if (isLoading) {
@@ -28,7 +28,7 @@ function SearchPage() {
         <div>
             <h1 className={styles.title}>Search Page</h1>
 
-            <SearchForm onSubmit={getTvShowsList} />
+            <SearchForm hint={searchHint} onSubmit={handleSearch} />
 
             {renderContent()}
         </div>

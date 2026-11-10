@@ -1,6 +1,10 @@
-import {useCallback, useState} from 'react';
+import debounce from 'debounce';
+import {useEffect, useMemo, useState} from 'react';
 import type {TvShow} from '../../api/types';
 import {useApi} from '../../ApiProvider/useApi';
+
+const MIN_SEARCH_LENGTH = 3;
+const SUBMIT_DELAY = 1000;
 
 export const useSearchPage = () => {
     const [tvShowsList, setTvShowsList] = useState<TvShow[] | null>(null);
@@ -9,29 +13,40 @@ export const useSearchPage = () => {
 
     const {getTvShowsList} = useApi();
 
-    const handleGetTvShowsList = useCallback(
-        (search: string) => {
-            setIsLoading(true);
-            setError(null);
+    const handleSearch = useMemo(
+        () =>
+            debounce(async (value: string) => {
+                const trimmedValue = value.trim();
 
-            getTvShowsList(search)
-                .then((data) => {
+                if (trimmedValue.length < MIN_SEARCH_LENGTH) {
+                    return;
+                }
+
+                setIsLoading(true);
+                setError(null);
+
+                try {
+                    const data = await getTvShowsList(trimmedValue);
+
                     setTvShowsList(data);
-                })
-                .catch((err) => {
+                } catch (err) {
                     if (err instanceof Error) {
                         setError(err.message);
                     }
-                })
-                .finally(() => setIsLoading(false));
-        },
+                } finally {
+                    setIsLoading(false);
+                }
+            }, SUBMIT_DELAY),
         [getTvShowsList],
     );
+
+    useEffect(() => () => handleSearch.clear(), [handleSearch]);
 
     return {
         error,
         isLoading,
         tvShowsList,
-        getTvShowsList: handleGetTvShowsList,
+        searchHint: `Type at least ${MIN_SEARCH_LENGTH} characters. Results update automatically.`,
+        handleSearch,
     };
 };

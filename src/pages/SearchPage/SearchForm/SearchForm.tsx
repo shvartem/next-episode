@@ -1,15 +1,16 @@
 import clsx from 'clsx';
 
 import styles from './SearchForm.module.css';
-import {MIN_SEARCH_LENGTH, useSearchForm} from './useSearchForm';
+import {useSearchForm} from './useSearchForm';
 
 interface Props {
     className?: string;
+    hint: string;
     onSubmit: (search: string) => void;
 }
 
 export const SearchForm = (props: Props) => {
-    const {className, ...restProps} = props;
+    const {className, hint, ...restProps} = props;
 
     const {search, handleChange, handleSubmit} = useSearchForm(restProps);
 
@@ -39,7 +40,7 @@ export const SearchForm = (props: Props) => {
             </div>
 
             <p className={styles.hint} id="search-hint">
-                Type at least {MIN_SEARCH_LENGTH} characters. Results update automatically.
+                {hint}
             </p>
         </form>
     );

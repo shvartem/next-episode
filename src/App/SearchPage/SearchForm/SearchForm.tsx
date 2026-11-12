@@ -1,17 +1,17 @@
 import clsx from 'clsx';
 
 import type {Props} from './types';
-import {useSearchFormPresenter} from './useSearchFormPresenter';
+import {useSearchForm} from './useSearchForm';
 
 import styles from './SearchForm.module.css';
 
 export const SearchForm = (props: Props) => {
     const {className, hint} = props;
 
-    const {search, handleChange, handleSubmit} = useSearchFormPresenter(props);
+    const {search, handleChange} = useSearchForm(props);
 
     return (
-        <form className={clsx(styles.root, className)} onSubmit={handleSubmit} role="search">
+        <div className={clsx(styles.root, className)} role="search">
             <label className={styles.label} htmlFor="search">
                 Search TV shows
             </label>
@@ -38,6 +38,6 @@ export const SearchForm = (props: Props) => {
             <p className={styles.hint} id="search-hint">
                 {hint}
             </p>
-        </form>
+        </div>
     );
 };

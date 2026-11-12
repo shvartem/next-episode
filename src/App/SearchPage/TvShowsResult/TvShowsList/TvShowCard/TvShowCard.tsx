@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 
 import type {Props} from './types';
-import {useTvShowCardPresenter} from './useTvShowCardPresenter';
+import {useTvShowCard} from './useTvShowCard';
 
 import styles from './TvShowCard.module.css';
 
@@ -9,7 +9,7 @@ export const TvShowCard = (props: Props) => {
     const {className} = props;
 
     const {name, url, posterUrl, posterAlt, details, rating, hasRating, genres, hasGenres, summary} =
-        useTvShowCardPresenter(props);
+        useTvShowCard(props);
 
     return (
         <article className={clsx(styles.root, className)}>

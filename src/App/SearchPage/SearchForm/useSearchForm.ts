@@ -2,7 +2,7 @@ import {useState} from 'react';
 
 import type {Props} from './types';
 
-export const useSearchFormPresenter = (props: Props) => {
+export const useSearchForm = (props: Props) => {
     const {onSubmit} = props;
 
     const [search, setSearch] = useState('');
@@ -14,13 +14,8 @@ export const useSearchFormPresenter = (props: Props) => {
         onSubmit(value);
     };
 
-    const handleSubmit = (evt: React.SubmitEvent<HTMLFormElement>) => {
-        evt.preventDefault();
-    };
-
     return {
         search,
         handleChange,
-        handleSubmit,
     };
 };

@@ -1,14 +1,14 @@
 import clsx from 'clsx';
 
 import type {Props} from './types';
-import {useGenreFilterPresenter} from './useGenreFilterPresenter';
+import {useGenreFilter} from './useGenreFilter';
 
 import styles from './GenreFilter.module.css';
 
 export const GenreFilter = (props: Props) => {
     const {className} = props;
 
-    const {isVisible, totalCount, isAllSelected, handleReset, chips} = useGenreFilterPresenter(props);
+    const {isVisible, totalCount, isAllSelected, handleReset, chips} = useGenreFilter(props);
 
     if (!isVisible) {
         return null;

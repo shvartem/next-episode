@@ -4,7 +4,7 @@ import {usePaginatedList} from './usePaginatedList';
 
 const PAGE_SIZE = 3;
 
-export const useTvShowsResultPresenter = (props: Props) => {
+export const useTvShowsResult = (props: Props) => {
     const {list} = props;
 
     const {genres, selectedGenre, filteredList, setSelectedGenre} = useGenreFilteredList(list);

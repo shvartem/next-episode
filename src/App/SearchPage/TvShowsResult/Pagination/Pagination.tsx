@@ -1,14 +1,14 @@
 import clsx from 'clsx';
 
 import type {Props} from './types';
-import {usePaginationPresenter} from './usePaginationPresenter';
+import {usePagination} from './usePagination';
 
 import styles from './Pagination.module.css';
 
 export const Pagination = (props: Props) => {
     const {className} = props;
 
-    const {isVisible, pages, isFirst, isLast, handlePrevious, handleNext} = usePaginationPresenter(props);
+    const {isVisible, pages, isFirst, isLast, handlePrevious, handleNext} = usePagination(props);
 
     if (!isVisible) {
         return null;

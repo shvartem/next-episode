@@ -2,7 +2,7 @@ import {createContext, useContext} from 'react';
 import type {TvShow} from '~/api/types';
 
 interface Api {
-    getTvShowsList: (query: string) => Promise<TvShow[]>;
+    getTvShowsList: ({query, signal}: {query: string; signal?: AbortSignal | undefined}) => Promise<TvShow[]>;
 }
 
 export const ApiContext = createContext<Api | null>(null);

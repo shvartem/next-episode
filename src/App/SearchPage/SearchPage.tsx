@@ -1,12 +1,13 @@
-import styles from './SearchPage.module.css';
 import {TvShowsResult} from './TvShowsResult/TvShowsResult';
 import {SearchForm} from './SearchForm/SearchForm';
 import {Loader} from './Loader/Loader';
 import {Error} from './Error/Error';
-import {useSearchPagePresenter} from './useSearchPagePresenter';
+import {useSearchPage} from './useSearchPage';
 
-function SearchPage() {
-    const {error, isLoading, tvShowsList, searchHint, handleSearch} = useSearchPagePresenter();
+import styles from './SearchPage.module.css';
+
+export const SearchPage = () => {
+    const {error, isLoading, tvShowsList, searchHint, handleSearch} = useSearchPage();
 
     const renderContent = () => {
         if (isLoading) {
@@ -33,6 +34,4 @@ function SearchPage() {
             {renderContent()}
         </div>
     );
-}
-
-export default SearchPage;
+};

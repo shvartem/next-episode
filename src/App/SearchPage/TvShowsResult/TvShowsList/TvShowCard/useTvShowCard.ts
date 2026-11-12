@@ -6,7 +6,7 @@ const getPlainText = (html: string) => {
     return new DOMParser().parseFromString(htmlWithSpaces, 'text/html').body.textContent.trim();
 };
 
-export const useTvShowCardPresenter = (props: Props) => {
+export const useTvShowCard = (props: Props) => {
     const {card} = props;
     const {show} = card;
 

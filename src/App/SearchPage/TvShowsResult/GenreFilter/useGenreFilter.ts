@@ -1,6 +1,6 @@
 import type {Props} from './types';
 
-export const useGenreFilterPresenter = (props: Props) => {
+export const useGenreFilter = (props: Props) => {
     const {genres, totalCount, selectedGenre, onChange} = props;
 
     const chips = genres.map((genre) => {

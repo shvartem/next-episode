@@ -3,6 +3,6 @@ import { defineConfig } from 'vite'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/next-episode/',
+  base: process.env.BASE_PATH ?? '/next-episode/',
   plugins: [react()],
 })

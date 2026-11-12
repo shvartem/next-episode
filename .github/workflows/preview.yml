@@ -1,0 +1,90 @@
+name: PR preview
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, closed]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: gh-pages
+  cancel-in-progress: false
+
+env:
+  PREVIEW_DIR: pr-${{ github.event.number }}
+  PREVIEW_URL: https://shvartem.github.io/next-episode/pr-${{ github.event.number }}/
+
+jobs:
+  deploy:
+    if: github.event.action != 'closed' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+        env:
+          BASE_PATH: /next-episode/${{ env.PREVIEW_DIR }}/
+      - uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: dist
+          branch: gh-pages
+          target-folder: ${{ env.PREVIEW_DIR }}
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const body = `<!-- pr-preview -->\nPreview: ${process.env.PREVIEW_URL}\n\nCommit: ${context.payload.pull_request.head.sha}`;
+            await upsertComment(github, context, body);
+
+            async function upsertComment(github, context, body) {
+              const {owner, repo} = context.repo;
+              const issue_number = context.issue.number;
+              const comments = await github.paginate(github.rest.issues.listComments, {owner, repo, issue_number});
+              const existing = comments.find((comment) => comment.body?.startsWith('<!-- pr-preview -->'));
+
+              if (existing) {
+                await github.rest.issues.updateComment({owner, repo, comment_id: existing.id, body});
+              } else {
+                await github.rest.issues.createComment({owner, repo, issue_number, body});
+              }
+            }
+
+  remove:
+    if: github.event.action == 'closed' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+      - name: Remove preview folder
+        run: |
+          git rm -r --quiet --ignore-unmatch "$PREVIEW_DIR"
+          if git diff --cached --quiet; then
+            echo "Nothing to remove"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Remove preview for $PREVIEW_DIR"
+          git push origin gh-pages
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const {owner, repo} = context.repo;
+            const issue_number = context.issue.number;
+            const comments = await github.paginate(github.rest.issues.listComments, {owner, repo, issue_number});
+            const existing = comments.find((comment) => comment.body?.startsWith('<!-- pr-preview -->'));
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner,
+                repo,
+                comment_id: existing.id,
+                body: '<!-- pr-preview -->\nPreview removed.',
+              });
+            }

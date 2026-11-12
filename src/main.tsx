@@ -1,12 +1,16 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import { RouterProvider } from 'react-router/dom'
-import 'modern-normalize/modern-normalize.css'
-import './index.css'
-import { router } from './router.tsx'
+import {StrictMode} from 'react';
+import {createRoot} from 'react-dom/client';
+
+import 'modern-normalize/modern-normalize.css';
+import './index.css';
+
+import {ApiProvider} from './ApiProvider/ApiProvider';
+import {App} from './App/App';
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <RouterProvider router={router} />
-  </StrictMode>,
-)
+    <StrictMode>
+        <ApiProvider>
+            <App />
+        </ApiProvider>
+    </StrictMode>,
+);

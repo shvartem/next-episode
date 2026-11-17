@@ -1,5 +1,7 @@
 # React + TypeScript + Vite
 
+Описание структуры и слоёв проекта: [архитектура](docs/architecture.md).
+
 This template provides a minimal setup to get React working in Vite with HMR and ESLint rules.
 
 Currently, two official plugins are available:

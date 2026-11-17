@@ -1,0 +1,58 @@
+.root {
+  margin-bottom: 24px;
+}
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chip {
+  height: 36px;
+  padding: 0 16px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: transparent;
+  font: inherit;
+  font-size: 15px;
+  color: var(--text-h);
+  cursor: pointer;
+  transition: border-color 0.2s;
+
+  &:hover {
+    border-color: var(--text);
+  }
+
+  &:focus-visible {
+    border-color: var(--text-h);
+    outline: 2px solid var(--text-h);
+    outline-offset: 1px;
+  }
+
+  @media (max-width: 600px) {
+    height: 32px;
+    padding: 0 12px;
+    font-size: 14px;
+  }
+}
+
+.selected {
+  border-color: var(--text-h);
+  background: var(--text-h);
+  color: var(--bg);
+
+  &:hover {
+    border-color: var(--text-h);
+  }
+}
+
+.count {
+  margin-left: 2px;
+  font-size: 0.85em;
+  opacity: 0.7;
+}

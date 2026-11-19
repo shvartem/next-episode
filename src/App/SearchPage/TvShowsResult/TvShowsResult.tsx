@@ -5,34 +5,27 @@ import {EmptyList} from './EmptyList/EmptyList';
 import {GenreFilter} from './GenreFilter/GenreFilter';
 import {TvShowsList} from './TvShowsList/TvShowsList';
 import {Pagination} from './Pagination/Pagination';
-import {useTvShowsResult} from './logic/useTvShowsResult';
 
 import styles from './TvShowsResult.module.css';
 
 export const TvShowsResult = (props: Props) => {
-    const {className} = props;
-
-    const {hasList, totalCount, genres, selectedGenre, handleGenreChange, page, pageItems, pagesCount, setPage} =
-        useTvShowsResult(props);
+    const {className, result, selectedGenre, onGenreChange, onPageChange} = props;
+    const {unfilteredCount, totalCount, genres, page, items, pagesCount} = result;
 
     return (
         <div className={clsx(styles.root, className)}>
-            {!hasList && <EmptyList />}
-
-            {hasList && (
-                <>
-                    <GenreFilter
-                        genres={genres}
-                        totalCount={totalCount}
-                        selectedGenre={selectedGenre}
-                        onChange={handleGenreChange}
-                    />
-
-                    <TvShowsList list={pageItems} />
-
-                    <Pagination page={page} pagesCount={pagesCount} onChange={setPage} />
-                </>
+            {genres.length > 0 && (
+                <GenreFilter
+                    genres={genres}
+                    totalCount={unfilteredCount}
+                    selectedGenre={selectedGenre}
+                    onChange={onGenreChange}
+                />
             )}
+
+            {totalCount === 0 ? <EmptyList /> : <TvShowsList list={items} />}
+
+            <Pagination page={page} pagesCount={pagesCount} onChange={onPageChange} />
         </div>
     );
 };

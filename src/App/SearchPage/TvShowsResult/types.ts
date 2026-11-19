@@ -1,6 +1,9 @@
-import type {TvShow} from '../types';
+import type {ShowsPage} from '#shared/shows';
 
 export interface Props {
     className?: string;
-    list: TvShow[];
+    result: ShowsPage;
+    selectedGenre: string | null;
+    onGenreChange: (genre: string | null) => void;
+    onPageChange: (page: number) => void;
 }

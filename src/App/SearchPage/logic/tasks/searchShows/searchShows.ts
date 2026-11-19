@@ -1,11 +1,5 @@
+import type {ShowsSearchParams} from '#shared/shows';
 import {getTvShowsList} from '../../api';
 
-export const searchShows = async (value: string, signal?: AbortSignal) => {
-    const query = value.trim();
-
-    if (!query) {
-        return null;
-    }
-
-    return getTvShowsList({query, signal});
-};
+export const searchShows = (params: ShowsSearchParams, signal: AbortSignal) =>
+    getTvShowsList(params, signal);

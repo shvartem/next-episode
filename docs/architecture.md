@@ -174,3 +174,7 @@ export const useCounter = (props: Props) => {
     return {value, handleIncrement};
 };
 ```
+
+## Архитектура backend
+
+[Структура и слои backend](backend-architecture.md).

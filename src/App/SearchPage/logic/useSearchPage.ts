@@ -1,51 +1,75 @@
 import debounce from 'debounce';
-import {useEffect, useMemo, useRef, useState} from 'react';
-import type {TvShow} from '../types';
+import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 
+import type {ShowsPage, ShowsSearchParams} from '#shared/shows';
 import {searchShows} from './tasks/searchShows/searchShows';
 
 const SUBMIT_DELAY = 300;
 
 export const useSearchPage = () => {
-    const [tvShowsList, setTvShowsList] = useState<TvShow[] | null>(null);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [result, setResult] = useState<ShowsPage | null>(null);
+    const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     const controllerRef = useRef<AbortController | null>(null);
+    const queryRef = useRef('');
 
-    const debouncedSearch = useMemo(
-        () =>
-            debounce(async (value: string, signal: AbortSignal) => {
-                setIsLoading(true);
-                setError(null);
+    const loadResults = useCallback(async (params: ShowsSearchParams, signal: AbortSignal) => {
+        try {
+            const data = await searchShows(params, signal);
 
-                try {
-                    const data = await searchShows(value, signal);
+            if (!signal.aborted) {
+                setResult(data);
+                setSelectedGenre(params.genre);
+            }
+        } catch (err) {
+            if (!signal.aborted) {
+                setError(err instanceof Error ? err.message : 'Search failed');
+            }
+        } finally {
+            if (!signal.aborted) {
+                setIsLoading(false);
+            }
+        }
+    }, []);
 
-                    if (!signal.aborted) {
-                        setTvShowsList(data);
-                    }
-                } catch (err) {
-                    if (signal.aborted) {
-                        return;
-                    }
+    const debouncedSearch = useMemo(() => debounce(loadResults, SUBMIT_DELAY), [loadResults]);
 
-                    if (err instanceof Error) {
-                        setError(err.message);
-                    }
-                } finally {
-                    if (!signal.aborted) {
-                        setIsLoading(false);
-                    }
-                }
-            }, SUBMIT_DELAY),
-        [],
-    );
+    const requestResults = (params: ShowsSearchParams, debounced: boolean) => {
+        debouncedSearch.clear();
+        controllerRef.current?.abort();
+        setError(null);
+
+        if (!params.query) {
+            setResult(null);
+            setSelectedGenre(null);
+            setIsLoading(false);
+            return;
+        }
+
+        const controller = new AbortController();
+        controllerRef.current = controller;
+        setIsLoading(true);
+
+        if (debounced) {
+            debouncedSearch(params, controller.signal);
+        } else {
+            void loadResults(params, controller.signal);
+        }
+    };
 
     const handleSearch = (value: string) => {
-        controllerRef.current?.abort();
-        controllerRef.current = new AbortController();
-        debouncedSearch(value, controllerRef.current.signal);
+        queryRef.current = value.trim();
+        requestResults({query: queryRef.current, genre: null, page: 1}, true);
+    };
+
+    const handleGenreChange = (genre: string | null) => {
+        requestResults({query: queryRef.current, genre, page: 1}, false);
+    };
+
+    const handlePageChange = (page: number) => {
+        requestResults({query: queryRef.current, genre: selectedGenre, page}, false);
     };
 
     useEffect(
@@ -59,8 +83,11 @@ export const useSearchPage = () => {
     return {
         error,
         isLoading,
-        tvShowsList,
+        result,
+        selectedGenre,
         searchHint: 'Results update automatically.',
         handleSearch,
+        handleGenreChange,
+        handlePageChange,
     };
 };

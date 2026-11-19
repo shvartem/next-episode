@@ -1,5 +1,9 @@
-import {tvMazeApi} from "~/api";
-import type {TvShow} from "../types";
+import {showsApi} from '~/api';
+import type {ShowsPage, ShowsSearchParams} from '#shared/shows';
 
-export const getTvShowsList = ({query, signal}: {query: string; signal?: AbortSignal}) =>
-    tvMazeApi<TvShow[]>({endpoint: 'search/shows', queryParams: {q: query}, signal});
+export const getTvShowsList = ({query, genre, page}: ShowsSearchParams, signal: AbortSignal) =>
+    showsApi<ShowsPage>({
+        endpoint: 'shows',
+        queryParams: {q: query, page: String(page), ...(genre === null ? {} : {genre})},
+        signal,
+    });

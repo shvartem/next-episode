@@ -1,4 +1,4 @@
-import type {TvShow} from '../../../types';
+import type {TvShow} from '#shared/shows';
 
 export const filterShowsByGenre = (list: TvShow[], genre: string | null): TvShow[] => {
     if (genre === null) {

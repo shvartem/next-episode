@@ -1,7 +1,4 @@
-export interface GenreOption {
-    name: string;
-    count: number;
-}
+import type {GenreOption} from '#shared/shows';
 
 export interface Props {
     className?: string;

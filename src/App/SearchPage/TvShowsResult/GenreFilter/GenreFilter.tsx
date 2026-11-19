@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 
 import type {Props} from './types';
-import {useGenreFilter} from './useGenreFilter';
+import {useGenreFilter} from './logic/useGenreFilter';
 
 import styles from './GenreFilter.module.css';
 

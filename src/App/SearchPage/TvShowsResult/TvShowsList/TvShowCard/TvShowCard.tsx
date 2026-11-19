@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 
 import type {Props} from './types';
-import {useTvShowCard} from './useTvShowCard';
+import {useTvShowCard} from './logic/useTvShowCard';
 
 import styles from './TvShowCard.module.css';
 

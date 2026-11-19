@@ -5,7 +5,7 @@ import {EmptyList} from './EmptyList/EmptyList';
 import {GenreFilter} from './GenreFilter/GenreFilter';
 import {TvShowsList} from './TvShowsList/TvShowsList';
 import {Pagination} from './Pagination/Pagination';
-import {useTvShowsResult} from './useTvShowsResult';
+import {useTvShowsResult} from './logic/useTvShowsResult';
 
 import styles from './TvShowsResult.module.css';
 

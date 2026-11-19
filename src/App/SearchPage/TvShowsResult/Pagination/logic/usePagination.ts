@@ -1,4 +1,4 @@
-import type {Props} from './types';
+import type {Props} from '../types';
 
 export const usePagination = (props: Props) => {
     const {page, pagesCount, onChange} = props;
@@ -8,6 +8,7 @@ export const usePagination = (props: Props) => {
 
         return {
             value,
+            label: `Page ${value}`,
             isCurrent: value === page,
             handleClick: () => onChange(value),
         };

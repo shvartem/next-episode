@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 
 import type {Props} from './types';
-import {useSearchForm} from './useSearchForm';
+import {useSearchForm} from './logic/useSearchForm';
 
 import styles from './SearchForm.module.css';
 

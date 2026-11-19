@@ -1,4 +1,4 @@
-import type {Props} from './types';
+import type {Props} from '../types';
 import {useGenreFilteredList} from './useGenreFilteredList';
 import {usePaginatedList} from './usePaginatedList';
 

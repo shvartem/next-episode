@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 
 import type {Props} from './types';
-import {usePagination} from './usePagination';
+import {usePagination} from './logic/usePagination';
 
 import styles from './Pagination.module.css';
 
@@ -28,7 +28,7 @@ export const Pagination = (props: Props) => {
                             type="button"
                             onClick={item.handleClick}
                             aria-current={item.isCurrent ? 'page' : undefined}
-                            aria-label={`Page ${item.value}`}
+                            aria-label={item.label}
                         >
                             {item.value}
                         </button>

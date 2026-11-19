@@ -1,6 +1,6 @@
 import {useState} from 'react';
 
-import type {Props} from './types';
+import type {Props} from '../types';
 
 export const useSearchForm = (props: Props) => {
     const {onSubmit} = props;

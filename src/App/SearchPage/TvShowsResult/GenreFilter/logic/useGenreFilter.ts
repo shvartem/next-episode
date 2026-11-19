@@ -1,4 +1,4 @@
-import type {Props} from './types';
+import type {Props} from '../types';
 
 export const useGenreFilter = (props: Props) => {
     const {genres, totalCount, selectedGenre, onChange} = props;

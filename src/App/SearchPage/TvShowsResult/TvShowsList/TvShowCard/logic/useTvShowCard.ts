@@ -1,4 +1,4 @@
-import type {Props} from './types';
+import type {Props} from '../types';
 
 const getPlainText = (html: string) => {
     const htmlWithSpaces = html.replace(/<\/p>|<br\s*\/?>/gi, ' ');

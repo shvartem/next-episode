@@ -1,6 +1,8 @@
 import {useState} from 'react';
-import type {TvShow} from '~/api/types';
-import type {GenreOption} from './GenreFilter/types';
+import type {TvShow} from '../../types';
+import type {GenreOption} from '../GenreFilter/types';
+
+import {filterShowsByGenre} from './tasks/filterShowsByGenre';
 
 const getGenreOptions = (list: TvShow[]): GenreOption[] => {
     const counts = new Map<string, number>();
@@ -20,7 +22,7 @@ export const useGenreFilteredList = (list: TvShow[]) => {
     const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
 
     const genres = getGenreOptions(list);
-    const filteredList = selectedGenre ? list.filter((item) => item.show.genres.includes(selectedGenre)) : list;
+    const filteredList = filterShowsByGenre(list, selectedGenre);
 
     return {
         genres,

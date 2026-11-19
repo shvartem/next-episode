@@ -1,7 +1,8 @@
 import debounce from 'debounce';
 import {useEffect, useMemo, useRef, useState} from 'react';
-import type {TvShow} from '~/api/types';
-import {useApi} from '~/ApiProvider/useApi';
+import type {TvShow} from '../types';
+
+import {searchShows} from './tasks/searchShows/searchShows';
 
 const SUBMIT_DELAY = 300;
 
@@ -12,27 +13,18 @@ export const useSearchPage = () => {
 
     const controllerRef = useRef<AbortController | null>(null);
 
-    const {getTvShowsList} = useApi();
-
     const debouncedSearch = useMemo(
         () =>
             debounce(async (value: string, signal: AbortSignal) => {
-                const trimmedValue = value.trim();
-
-                if (!trimmedValue) {
-                    setTvShowsList(null);
-                    setError(null);
-                    setIsLoading(false);
-                    return;
-                }
-
                 setIsLoading(true);
                 setError(null);
 
                 try {
-                    const data = await getTvShowsList({query: trimmedValue, signal});
+                    const data = await searchShows(value, signal);
 
-                    setTvShowsList(data);
+                    if (!signal.aborted) {
+                        setTvShowsList(data);
+                    }
                 } catch (err) {
                     if (signal.aborted) {
                         return;
@@ -47,7 +39,7 @@ export const useSearchPage = () => {
                     }
                 }
             }, SUBMIT_DELAY),
-        [getTvShowsList],
+        [],
     );
 
     const handleSearch = (value: string) => {

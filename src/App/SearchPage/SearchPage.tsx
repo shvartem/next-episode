@@ -2,7 +2,7 @@ import {TvShowsResult} from './TvShowsResult/TvShowsResult';
 import {SearchForm} from './SearchForm/SearchForm';
 import {Loader} from './Loader/Loader';
 import {Error} from './Error/Error';
-import {useSearchPage} from './useSearchPage';
+import {useSearchPage} from './logic/useSearchPage';
 
 import styles from './SearchPage.module.css';
 

@@ -1,13 +1,13 @@
 import {createContext, useContext} from 'react';
 
 import type {Favorites} from '#shared/favorites';
+import type {TvShow} from '#shared/shows';
 
 interface FavoritesContextValue {
     favorites: Favorites | null;
-    isSaving: boolean;
     loadFailed: boolean;
     reload: () => void;
-    changeFavorite: (id: number, name: string, selected: boolean) => void;
+    changeFavorite: (item: TvShow, selected: boolean) => void;
 }
 
 export const FavoritesContext = createContext<FavoritesContextValue | null>(null);

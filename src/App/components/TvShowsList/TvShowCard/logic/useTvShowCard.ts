@@ -10,7 +10,7 @@ const getPlainText = (html: string) => {
 export const useTvShowCard = (props: Props) => {
     const {card} = props;
     const {show} = card;
-    const {favorites, isSaving, changeFavorite} = useFavorites();
+    const {favorites, changeFavorite} = useFavorites();
     const isFavorite = favorites?.items.some(({show: item}) => item.id === show.id) ?? false;
 
     const channel = show.network ?? show.webChannel;
@@ -23,8 +23,8 @@ export const useTvShowCard = (props: Props) => {
         isFavorite,
         favoriteLabel: `Favorite: ${show.name}`,
         favoriteIcon: isFavorite ? '★' : '☆',
-        isFavoriteDisabled: !favorites || isSaving,
-        handleFavorite: () => changeFavorite(show.id, show.name, !isFavorite),
+        isFavoriteDisabled: !favorites,
+        handleFavorite: () => changeFavorite(card, !isFavorite),
         url: show.url,
         posterUrl: show.image?.medium ?? null,
         posterAlt: `${show.name} poster`,

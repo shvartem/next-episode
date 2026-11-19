@@ -37,3 +37,6 @@ curl 'http://localhost:3001/api/shows?q=office&genre=Comedy&page=1'
 `/api` и без завершающего слеша, например `https://api.example.com/api`.
 Сборки GitHub Pages и PR preview используют одноимённую переменную репозитория
 в GitHub Actions.
+
+Избранное хранится в памяти backend. Список общий для клиентов одного
+экземпляра сервера и сбрасывается при перезапуске.

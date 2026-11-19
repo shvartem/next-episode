@@ -82,3 +82,37 @@
 .summary {
   overflow-wrap: anywhere;
 }
+
+.heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.favorite {
+  min-width: 40px;
+  min-height: 40px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text-h);
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+
+  &[aria-pressed='true'] {
+    color: #a56500;
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: default;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .favorite[aria-pressed='true'] {
+    color: #ffc45c;
+  }
+}

@@ -1,6 +1,8 @@
 import express from 'express';
 
 import {logger} from './logger.ts';
+import {apiCors} from './middleware/apiCors.ts';
+import {favoritesRouter} from './routes/favorites/favorites.ts';
 import {showsRouter} from './routes/shows/shows.ts';
 
 const app = express();
@@ -22,7 +24,8 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use('/api', showsRouter);
+app.use('/api', apiCors, showsRouter);
+app.use('/api/favorites', favoritesRouter);
 
 app.listen(port, (error) => {
     if (error) {

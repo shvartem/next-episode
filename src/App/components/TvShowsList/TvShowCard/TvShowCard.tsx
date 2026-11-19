@@ -8,8 +8,10 @@ import styles from './TvShowCard.module.css';
 export const TvShowCard = (props: Props) => {
     const {className} = props;
 
-    const {name, url, posterUrl, posterAlt, details, rating, hasRating, genres, hasGenres, summary} =
-        useTvShowCard(props);
+    const {
+        name, url, posterUrl, posterAlt, details, rating, hasRating, genres, hasGenres, summary,
+        isFavorite, favoriteLabel, favoriteIcon, isFavoriteDisabled, handleFavorite,
+    } = useTvShowCard(props);
 
     return (
         <article className={clsx(styles.root, className)}>
@@ -20,11 +22,23 @@ export const TvShowCard = (props: Props) => {
             )}
 
             <div className={styles.content}>
-                <h2 className={styles.name}>
-                    <a href={url} target="_blank" rel="noreferrer">
-                        {name}
-                    </a>
-                </h2>
+                <div className={styles.heading}>
+                    <h2 className={styles.name}>
+                        <a href={url} target="_blank" rel="noreferrer">
+                            {name}
+                        </a>
+                    </h2>
+                    <button
+                        className={styles.favorite}
+                        type="button"
+                        aria-label={favoriteLabel}
+                        aria-pressed={isFavorite}
+                        disabled={isFavoriteDisabled}
+                        onClick={handleFavorite}
+                    >
+                        <span aria-hidden="true">{favoriteIcon}</span>
+                    </button>
+                </div>
 
                 {details && <p className={styles.details}>{details}</p>}
 

@@ -1,14 +1,8 @@
-import {NavLink, Outlet} from 'react-router';
+import {FavoritesProvider} from '~/App/FavoritesProvider/FavoritesProvider';
+import {RootLayoutContent} from './RootLayoutContent/RootLayoutContent';
 
-import styles from './RootLayout.module.css';
-
-export const RootLayout = () => {
-    return (
-        <div className={styles.layout}>
-            <nav>
-                <NavLink to="/">Home</NavLink>
-            </nav>
-            <Outlet />
-        </div>
-    );
-};
+export const RootLayout = () => (
+    <FavoritesProvider>
+        <RootLayoutContent />
+    </FavoritesProvider>
+);

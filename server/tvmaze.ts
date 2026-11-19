@@ -29,3 +29,8 @@ export const searchTvmaze = (query: string): Promise<TvShow[]> => {
     url.searchParams.set('q', query);
     return requestTvmazeShows(url);
 };
+
+export const getTvmazeShow = async (id: number): Promise<TvShow['show']> => {
+    const {data} = await requestJson(new URL(`https://api.tvmaze.com/shows/${id}`));
+    return data as TvShow['show'];
+};

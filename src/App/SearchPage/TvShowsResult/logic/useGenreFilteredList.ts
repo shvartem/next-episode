@@ -1,10 +1,10 @@
 import {useState} from 'react';
-import type {TvShow} from '../../types';
+import type {TvMazeSearchResult} from '~/api/tvMazeTypes';
 import type {GenreOption} from '../GenreFilter/types';
 
 import {filterShowsByGenre} from './tasks/filterShowsByGenre';
 
-const getGenreOptions = (list: TvShow[]): GenreOption[] => {
+const getGenreOptions = (list: TvMazeSearchResult[]): GenreOption[] => {
     const counts = new Map<string, number>();
 
     for (const item of list) {
@@ -18,7 +18,7 @@ const getGenreOptions = (list: TvShow[]): GenreOption[] => {
         .toSorted((a, b) => a.name.localeCompare(b.name));
 };
 
-export const useGenreFilteredList = (list: TvShow[]) => {
+export const useGenreFilteredList = (list: TvMazeSearchResult[]) => {
     const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
 
     const genres = getGenreOptions(list);

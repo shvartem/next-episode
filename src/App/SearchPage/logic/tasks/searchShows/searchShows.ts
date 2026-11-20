@@ -1,4 +1,4 @@
-import {getTvShowsList} from '../../api';
+import {showsRepository} from '~/api';
 
 export const searchShows = async (value: string, signal?: AbortSignal) => {
     const query = value.trim();
@@ -7,5 +7,7 @@ export const searchShows = async (value: string, signal?: AbortSignal) => {
         return null;
     }
 
-    return getTvShowsList({query, signal});
+    const shows = await showsRepository.getShowsList(query, signal);
+
+    return shows.toSorted((a, b) => a.show.name.localeCompare(b.show.name));
 };

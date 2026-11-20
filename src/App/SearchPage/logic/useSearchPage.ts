@@ -1,13 +1,13 @@
 import debounce from 'debounce';
 import {useEffect, useMemo, useRef, useState} from 'react';
-import type {TvShow} from '../types';
+import type {TvMazeSearchResult} from '~/api/tvMazeTypes';
 
 import {searchShows} from './tasks/searchShows/searchShows';
 
 const SUBMIT_DELAY = 300;
 
 export const useSearchPage = () => {
-    const [tvShowsList, setTvShowsList] = useState<TvShow[] | null>(null);
+    const [tvShowsList, setTvShowsList] = useState<TvMazeSearchResult[] | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 

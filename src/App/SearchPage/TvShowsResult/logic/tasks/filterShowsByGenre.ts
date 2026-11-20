@@ -1,6 +1,6 @@
-import type {TvShow} from '../../../types';
+import type {TvMazeSearchResult} from '~/api/tvMazeTypes';
 
-export const filterShowsByGenre = (list: TvShow[], genre: string | null): TvShow[] => {
+export const filterShowsByGenre = (list: TvMazeSearchResult[], genre: string | null): TvMazeSearchResult[] => {
     if (genre === null) {
         return list;
     }

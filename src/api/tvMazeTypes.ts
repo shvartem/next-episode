@@ -14,7 +14,7 @@ export interface TvShowChannel {
     officialSite: string | null;
 }
 
-export interface TvShow {
+export interface TvMazeSearchResult {
     score: number;
     show: {
         id: number;

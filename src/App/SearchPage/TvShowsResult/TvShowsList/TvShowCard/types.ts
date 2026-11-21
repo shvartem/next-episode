@@ -1,6 +1,6 @@
-import type {TvMazeSearchResult} from '~/api/tvMazeTypes';
+import type {Show} from '~/api';
 
 export interface Props {
     className?: string;
-    card: TvMazeSearchResult;
+    card: Show;
 }

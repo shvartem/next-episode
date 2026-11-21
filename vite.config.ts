@@ -5,6 +5,7 @@ import { defineConfig } from 'vite'
 // https://vite.dev/config/
 export default defineConfig({
   base: process.env.BASE_PATH ?? '/next-episode/',
+  server: {proxy: {'/api': 'http://localhost:3001'}},
   plugins: [react()],
   resolve: {
     alias: {

@@ -7,7 +7,7 @@ import {useSearchPage} from './logic/useSearchPage';
 import styles from './SearchPage.module.css';
 
 export const SearchPage = () => {
-    const {error, isLoading, tvShowsList, searchHint, handleSearch} = useSearchPage();
+    const {error, isLoading, result, searchHint, selectedGenre, handleSearch, handleGenreChange, handlePageChange} = useSearchPage();
 
     const renderContent = () => {
         if (isLoading) {
@@ -18,8 +18,15 @@ export const SearchPage = () => {
             return <Error error={error} />;
         }
 
-        if (tvShowsList) {
-            return <TvShowsResult list={tvShowsList} />;
+        if (result) {
+            return (
+                <TvShowsResult
+                    result={result}
+                    selectedGenre={selectedGenre}
+                    onGenreChange={handleGenreChange}
+                    onPageChange={handlePageChange}
+                />
+            );
         }
 
         return null;

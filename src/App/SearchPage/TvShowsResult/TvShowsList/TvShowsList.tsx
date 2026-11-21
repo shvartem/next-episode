@@ -11,7 +11,7 @@ export const TvShowsList = (props: Props) => {
     return (
         <ol className={clsx(styles.root, className)}>
             {list.map((item) => (
-                <li key={item.show.id}>
+                <li key={item.id}>
                     <TvShowCard card={item} />
                 </li>
             ))}

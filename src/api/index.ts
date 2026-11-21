@@ -1,13 +1,14 @@
+import type {SearchQuery, SearchResult} from '../../shared/shows';
 import {createApi} from './createApi';
-import type {TvMazeSearchResult} from './tvMazeTypes';
 
-export const showsApi = createApi({baseUrl: 'https://api.tvmaze.com'});
+const showsApi = createApi({baseUrl: import.meta.env.VITE_API_BASE_URL || '/api'});
 
-export type ShowsRepository = {
-    getShowsList: (query: string, signal?: AbortSignal) => Promise<TvMazeSearchResult[]>;
+export const showsRepository = {
+    getShowsList: ({q, page, genre}: SearchQuery, signal?: AbortSignal) => {
+        const queryParams: Record<string, string> = {q, page: String(page)};
+        if (genre !== null) queryParams.genre = genre;
+        return showsApi.createRequest<SearchResult>({endpoint: '/shows', queryParams, signal});
+    },
 };
 
-export const showsRepository: ShowsRepository = {
-    getShowsList: (query: string, signal?: AbortSignal) =>
-        showsApi.createRequest({endpoint: '/search/shows', queryParams: {q: query}, signal}),
-};
+export type {SearchQuery, SearchResult, Show} from '../../shared/shows';

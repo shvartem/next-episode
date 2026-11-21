@@ -1,6 +1,9 @@
-import type {TvMazeSearchResult} from '~/api/tvMazeTypes';
+import type {SearchResult} from '~/api';
 
 export interface Props {
     className?: string;
-    list: TvMazeSearchResult[];
+    result: SearchResult;
+    selectedGenre: string | null;
+    onGenreChange: (genre: string | null) => void;
+    onPageChange: (page: number) => void;
 }

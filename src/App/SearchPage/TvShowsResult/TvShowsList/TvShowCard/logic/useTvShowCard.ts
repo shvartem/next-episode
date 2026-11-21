@@ -7,22 +7,20 @@ const getPlainText = (html: string) => {
 };
 
 export const useTvShowCard = (props: Props) => {
-    const {card} = props;
-    const {show} = card;
+    const {card: show} = props;
 
-    const channel = show.network ?? show.webChannel;
-    const details = [show.premiered?.slice(0, 4), show.status, show.type, show.language, channel?.name]
+    const details = [show.premiered?.slice(0, 4), show.status, show.type, show.language, show.channel]
         .filter(Boolean)
         .join(' · ');
 
     return {
         name: show.name,
         url: show.url,
-        posterUrl: show.image?.medium ?? null,
+        posterUrl: show.posterUrl,
         posterAlt: `${show.name} poster`,
         details,
-        rating: show.rating.average,
-        hasRating: show.rating.average !== null,
+        rating: show.rating,
+        hasRating: show.rating !== null,
         genres: show.genres,
         hasGenres: !!show.genres.length,
         summary: show.summary ? getPlainText(show.summary) : '',

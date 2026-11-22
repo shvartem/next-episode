@@ -28,3 +28,9 @@ API запускается отдельно командой `npm run start:api`
 `GET /api/shows?q=girls&genre=Drama&page=2` возвращает страницу результатов.
 Параметры `genre` и `page` необязательны. Кеш успешных поисков TVmaze живёт
 пять минут в памяти процесса API. Проверки запускаются командой `npm run test:api`.
+
+`GET /api/favorites` читает коллекцию, `PUT /api/favorites/:showId` добавляет
+карточку, а `DELETE /api/favorites/:showId` удаляет её. Каждый успешный запрос
+возвращает `{ items, count }`. Для всех трёх маршрутов передаётся
+`X-Favorites-Owner` с UUID v4, который API-клиент хранит в `localStorage`
+браузера. Сервер хранит карточки в памяти. После его перезапуска коллекции пусты.

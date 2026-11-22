@@ -70,3 +70,5 @@ export interface TvMazeSearchResult {
         };
     };
 }
+
+export type TvMazeShow = TvMazeSearchResult['show'];

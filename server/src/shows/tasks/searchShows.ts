@@ -1,4 +1,4 @@
-import type {SearchQuery, Show} from '../../../shared/shows.ts';
+import type {SearchQuery, Show} from '../../../../shared/shows.ts';
 
 const PAGE_SIZE = 3;
 

@@ -2,7 +2,10 @@ import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {searchTvMaze} from '../src/tvmaze/searchTvMaze.ts';
 import {presentShows} from '../src/shows/showsPresenter.ts';
+import {setupTestServer} from './setupTestServer.ts';
 
+const apiUrl = setupTestServer();
+const request = globalThis.fetch;
 const ttl = 5 * 60 * 1000;
 
 test('same query shares an in-flight request and an empty result for five minutes', async t => {
@@ -43,4 +46,14 @@ test('genre and page changes reuse one search and keep counts from the full resu
     assert.deepEqual(result.items.map(show => show.name), ['Delta']);
     assert.deepEqual(result.genres, [{name: 'Comedy', count: 1}, {name: 'Drama', count: 4}]);
     assert.equal(fetchMock.mock.callCount(), 1);
+});
+
+test('search exposes a provider-independent error and validates the query', async t => {
+    const upstream = t.mock.method(globalThis, 'fetch', async () => new Response(null, {status: 503}));
+    assert.equal((await request(apiUrl('/shows'))).status, 400);
+    assert.equal(upstream.mock.callCount(), 0);
+
+    const unavailable = await request(apiUrl('/shows?q=unavailable'));
+    assert.equal(unavailable.status, 502);
+    assert.deepEqual(await unavailable.json(), {error: 'Unable to load shows'});
 });

@@ -19,6 +19,9 @@ export const favoritesStore = {
 
     remove(ownerId: string, showId: number): void {
         const collection = favorite[ownerId];
-        if (collection) delete collection[showId];
+        if (!collection) return;
+
+        delete collection[showId];
+        if (Object.keys(collection).length === 0) delete favorite[ownerId];
     },
 };

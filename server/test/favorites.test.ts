@@ -1,12 +1,10 @@
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
-import {once} from 'node:events';
-import {createServer} from 'node:http';
-import {after, before, test} from 'node:test';
+import {test} from 'node:test';
 import {FAVORITES_OWNER_HEADER} from '../../shared/favorites.ts';
-import {app} from '../src/app.ts';
+import {setupTestServer} from './setupTestServer.ts';
 
-const server = createServer(app);
+const apiUrl = setupTestServer();
 const request = globalThis.fetch;
 const ownerId = randomUUID();
 const origin = 'https://shvartem.github.io';
@@ -29,28 +27,10 @@ const tvMazeShow = {...tvMazeFields, image: posterUrl, network: {name: channel},
 const empty = {items: [], count: 0};
 const saved = {items: [show], count: 1};
 
-function favoritesUrl(path = '') {
-    const address = server.address();
-    assert.ok(address && typeof address === 'object');
-    return `http://127.0.0.1:${address.port}/api/favorites${path}`;
-}
-
 function call(method: string, path = '', owner: string | null = ownerId) {
     const headers = owner === null ? {} : {[FAVORITES_OWNER_HEADER]: owner};
-    return request(favoritesUrl(path), {method, headers});
+    return request(apiUrl(`/favorites${path}`), {method, headers});
 }
-
-before(async () => {
-    server.listen(0, '127.0.0.1');
-    await once(server, 'listening');
-});
-
-after(async () => {
-    if (!server.listening) return;
-    const closed = once(server, 'close');
-    server.close();
-    await closed;
-});
 
 test('favorites store cards by show ID and isolate browser owners', async t => {
     const upstream = t.mock.method(globalThis, 'fetch', async (url: string) => {
@@ -71,6 +51,20 @@ test('favorites store cards by show ID and isolate browser owners', async t => {
     assert.equal(upstream.mock.callCount(), 1);
 });
 
+test('removing favorites preserves other cards and other owners', async t => {
+    const owner = randomUUID();
+    const other = randomUUID();
+    t.mock.method(globalThis, 'fetch', async (url: string) =>
+        Response.json({...tvMazeShow, id: Number(new URL(url).pathname.split('/').at(-1))}));
+
+    for (const [id, user] of [[123, owner], [124, owner], [123, other]] as const) {
+        assert.equal((await call('PUT', `/${id}`, user)).status, 200);
+    }
+    assert.deepEqual(await (await call('DELETE', '/124', owner)).json(), saved);
+    assert.deepEqual(await (await call('DELETE', '/123', owner)).json(), empty);
+    assert.deepEqual(await (await call('GET', '', other)).json(), saved);
+});
+
 test('favorites validate owners and IDs, and allow retry after TVmaze errors', async t => {
     const upstream = t.mock.method(globalThis, 'fetch', async () => Response.json(tvMazeShow));
     assert.equal((await call('GET', '', null)).status, 400);
@@ -84,7 +78,9 @@ test('favorites validate owners and IDs, and allow retry after TVmaze errors', a
     upstream.mock.mockImplementationOnce(async () => new Response(null, {status: 404}));
     assert.equal((await call('PUT', '/123')).status, 404);
     upstream.mock.mockImplementationOnce(async () => new Response(null, {status: 503}));
-    assert.equal((await call('PUT', '/123')).status, 502);
+    const unavailable = await call('PUT', '/123');
+    assert.equal(unavailable.status, 502);
+    assert.deepEqual(await unavailable.json(), {error: 'Unable to load show'});
     upstream.mock.mockImplementationOnce(async () => Response.json({...tvMazeShow, id: 124}));
     assert.equal((await call('PUT', '/123')).status, 502);
     assert.deepEqual(await (await call('GET')).json(), empty);
@@ -93,7 +89,7 @@ test('favorites validate owners and IDs, and allow retry after TVmaze errors', a
 
 test('GitHub Pages can send the favorites owner header on all three routes', async () => {
     for (const [method, path] of [['GET', ''], ['PUT', '/123'], ['DELETE', '/123']]) {
-        const result = await request(favoritesUrl(path), {
+        const result = await request(apiUrl(`/favorites${path}`), {
             method: 'OPTIONS',
             headers: {
                 Origin: origin,
@@ -107,7 +103,7 @@ test('GitHub Pages can send the favorites owner header on all three routes', asy
         assert.equal(result.headers.get('access-control-allow-headers'), FAVORITES_OWNER_HEADER);
     }
 
-    const result = await request(favoritesUrl(), {headers: {Origin: origin, [FAVORITES_OWNER_HEADER]: ownerId}});
+    const result = await request(apiUrl('/favorites'), {headers: {Origin: origin, [FAVORITES_OWNER_HEADER]: ownerId}});
     assert.equal(result.status, 200);
     assert.equal(result.headers.get('access-control-allow-origin'), origin);
 });

@@ -53,7 +53,7 @@ favoritesRouter.put<ShowParams, MutationResult, unknown, unknown, OwnerLocals>('
 
         res.json(result);
     } catch {
-        res.status(502).json({error: 'Unable to load show from TVmaze'});
+        res.status(502).json({error: 'Unable to load show'});
     }
 });
 

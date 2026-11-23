@@ -14,6 +14,6 @@ showsRouter.get('/shows', async (req, res) => {
     try {
         res.json(await presentShows({q: q.trim(), genre: genre ?? null, page: Number(page)}));
     } catch {
-        res.status(502).json({error: 'Unable to load shows from TVmaze'});
+        res.status(502).json({error: 'Unable to load shows'});
     }
 });

@@ -8,7 +8,20 @@
 
 ## Слои
 
-View отображает данные и передаёт события в Presenter. Presenter готовит данные для View и вызывает Tasks для выполнения бизнес-действий. Tasks взаимодействуют со сторами напрямую.
+Зависимости в коде направлены от чаще меняющихся слоёв к более стабильным. View обычно меняется чаще всего, за ним следуют Presenter и Task. Самый стабильный слой — Store.
+
+| Слой | От каких слоёв может зависеть напрямую | Ответственность |
+| --- | --- | --- |
+| View | Presenter | Отображает готовые данные и передаёт события в Presenter. |
+| Presenter | Task, Store | Готовит данные для View, может читать Store напрямую, подписываться на его изменения и вызывать задачи. |
+| Task | Store | Выполняет бизнес-действие и при необходимости напрямую читает или обновляет Store. |
+| Store | Ни от одного из остальных слоёв | Хранит только глобальные данные приложения и предоставляет операции их чтения и записи. |
+
+Таблица описывает зависимости между четырьмя слоями. Возврат данных из Presenter во View не создаёт обратной зависимости. Task может использовать репозиторий, а Store — типы предметной области и библиотеку управления состоянием.
+
+Если обновление Store реализует бизнес-действие, его выполняет Task. Локальное состояние интерфейса, например состояние загрузки, может оставаться в Presenter. При выборе данных и способа доступа применяются [правила работы со Store](store.md).
+
+Внутри каждого слоя более изменчивый модуль зависит от публичного контракта более устойчивого. При создании и изменении модулей применяются [правила зависимостей и контрактов](module-contracts.md).
 
 ### View и Presenter
 
@@ -103,74 +116,4 @@ src/
     └── logout.ts
 ```
 
-## Пример компонента
-
-Абстрактный компонент, не из проекта:
-
-```text
-Counter/
-├── Counter.tsx
-├── Counter.module.css
-├── types.ts
-└── logic/
-    └── useCounter.ts
-```
-
-`types.ts`:
-
-```ts
-export interface Props {
-    className?: string;
-    initialValue: number;
-    onChange: (value: number) => void;
-}
-```
-
-`Counter.tsx`:
-
-```tsx
-import clsx from 'clsx';
-
-import type {Props} from './types';
-import {useCounter} from './logic/useCounter';
-
-import styles from './Counter.module.css';
-
-export const Counter = (props: Props) => {
-    const {className} = props;
-
-    const {value, handleIncrement} = useCounter(props);
-
-    return (
-        <div className={clsx(styles.root, className)}>
-            <span>{value}</span>
-            <button type="button" onClick={handleIncrement}>
-                +1
-            </button>
-        </div>
-    );
-};
-```
-
-`logic/useCounter.ts`:
-
-```ts
-import {useState} from 'react';
-
-import type {Props} from '../types';
-
-export const useCounter = (props: Props) => {
-    const {initialValue, onChange} = props;
-
-    const [value, setValue] = useState(initialValue);
-
-    const handleIncrement = () => {
-        const nextValue = value + 1;
-
-        setValue(nextValue);
-        onChange(nextValue);
-    };
-
-    return {value, handleIncrement};
-};
-```
+[Пример компонента с View и Presenter](component-example.md)

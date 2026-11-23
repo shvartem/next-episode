@@ -1,3 +1,4 @@
+import {useFavoriteShow} from '~/App/RootLayout/logic/useFavorites';
 import type {Props} from '../types';
 
 const getPlainText = (html: string) => {
@@ -8,6 +9,7 @@ const getPlainText = (html: string) => {
 
 export const useTvShowCard = (props: Props) => {
     const {card: show} = props;
+    const favorite = useFavoriteShow(show.id);
 
     const details = [show.premiered?.slice(0, 4), show.status, show.type, show.language, show.channel]
         .filter(Boolean)
@@ -24,5 +26,7 @@ export const useTvShowCard = (props: Props) => {
         genres: show.genres,
         hasGenres: !!show.genres.length,
         summary: show.summary ? getPlainText(show.summary) : '',
+        favoriteLabel: `Favorite ${show.name}`,
+        ...favorite,
     };
 };

@@ -7,7 +7,9 @@ import {useSearchPage} from './logic/useSearchPage';
 import styles from './SearchPage.module.css';
 
 export const SearchPage = () => {
-    const {error, isLoading, result, searchHint, selectedGenre, handleSearch, handleGenreChange, handlePageChange} = useSearchPage();
+    const {
+        search, error, isLoading, result, searchHint, selectedGenre, handleSearch, handleGenreChange, handlePageChange,
+    } = useSearchPage();
 
     const renderContent = () => {
         if (isLoading) {
@@ -36,7 +38,7 @@ export const SearchPage = () => {
         <div>
             <h1 className={styles.title}>Search Page</h1>
 
-            <SearchForm hint={searchHint} onSubmit={handleSearch} />
+            <SearchForm search={search} hint={searchHint} onChange={handleSearch} />
 
             {renderContent()}
         </div>

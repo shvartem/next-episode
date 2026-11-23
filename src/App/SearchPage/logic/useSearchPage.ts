@@ -1,59 +1,82 @@
-import {useEffect, useRef, useState} from 'react';
-import type {SearchQuery, SearchResult} from '~/api';
-import {searchShows} from './tasks/searchShows/searchShows';
+import {useEffect, useState} from 'react';
+import {useLocation, useNavigationType, useSearchParams} from 'react-router';
+
+import type {SearchQuery} from '~/api';
+import type {SearchResponse} from '../types';
+import {searchShows} from './tasks/searchShows';
 
 const SUBMIT_DELAY = 300;
 
+const readPage = (value: string | null) => {
+    if (!value || !/^\d+$/.test(value)) return 1;
+
+    const page = Number(value);
+    return Number.isSafeInteger(page) && page > 0 ? page : 1;
+};
+
 export const useSearchPage = () => {
-    const [query, setQuery] = useState<SearchQuery>({q: '', genre: null, page: 1});
-    const [result, setResult] = useState<SearchResult | null>(null);
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-    const controller = useRef<AbortController | null>(null);
-    const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+    const [params, setParams] = useSearchParams();
+    const {key} = useLocation();
+    const navigationType = useNavigationType();
+    const [response, setResponse] = useState<SearchResponse | null>(null);
 
-    const request = (next: SearchQuery, delay = 0) => {
-        clearTimeout(timer.current);
-        controller.current?.abort();
-        setQuery(next);
-        setError(null);
-        setIsLoading(Boolean(next.q));
+    const search = params.get('q') ?? '';
+    const q = search.trim();
+    const genre = params.get('genre') || null;
+    const page = readPage(params.get('page'));
+    const currentResponse = response?.locationKey === key ? response : null;
 
-        if (!next.q) {
-            setResult(null);
-            return;
-        }
+    useEffect(() => {
+        if (!q) return;
 
         const abort = new AbortController();
-        controller.current = abort;
         const load = async () => {
-            try {
-                const data = await searchShows(next, abort.signal);
-                if (!abort.signal.aborted) setResult(data);
-            } catch (err) {
-                if (!abort.signal.aborted && err instanceof Error) setError(err.message);
-            } finally {
-                if (!abort.signal.aborted) setIsLoading(false);
+            const [error, result] = await searchShows({q, genre, page}, abort.signal);
+            if (abort.signal.aborted) return;
+
+            if (error === null) {
+                setResponse({locationKey: key, result});
+            } else {
+                setResponse({locationKey: key, error: error.message});
             }
         };
 
-        if (delay) timer.current = setTimeout(load, delay);
-        else void load();
+        // Typing replaces the location. Filters, pagination and browser history load immediately.
+        const timeout = navigationType === 'REPLACE' ? setTimeout(load, SUBMIT_DELAY) : undefined;
+        if (timeout === undefined) void load();
+
+        return () => {
+            clearTimeout(timeout);
+            abort.abort();
+        };
+    }, [q, genre, page, key, navigationType]);
+
+    const updateParams = (next: SearchQuery, replace = false) => {
+        const nextParams = new URLSearchParams(params);
+
+        if (next.q) nextParams.set('q', next.q);
+        else nextParams.delete('q');
+
+        if (next.genre) nextParams.set('genre', next.genre);
+        else nextParams.delete('genre');
+
+        if (next.page > 1) nextParams.set('page', String(next.page));
+        else nextParams.delete('page');
+
+        if (nextParams.toString() !== params.toString()) {
+            setParams(nextParams, {replace, flushSync: replace});
+        }
     };
 
-    useEffect(() => () => {
-        clearTimeout(timer.current);
-        controller.current?.abort();
-    }, []);
-
     return {
-        error,
-        isLoading,
-        result,
-        selectedGenre: query.genre,
+        search,
+        error: currentResponse?.error,
+        isLoading: Boolean(q) && !currentResponse,
+        result: currentResponse?.result,
+        selectedGenre: genre,
         searchHint: 'Results update automatically.',
-        handleSearch: (value: string) => request({q: value.trim(), genre: null, page: 1}, SUBMIT_DELAY),
-        handleGenreChange: (genre: string | null) => request({...query, genre, page: 1}),
-        handlePageChange: (page: number) => request({...query, page}),
+        handleSearch: (value: string) => updateParams({q: value, genre: null, page: 1}, true),
+        handleGenreChange: (value: string | null) => updateParams({q: search, genre: value, page: 1}),
+        handlePageChange: (value: number) => updateParams({q: search, genre, page: value}),
     };
 };

@@ -6,9 +6,9 @@ import {useSearchForm} from './logic/useSearchForm';
 import styles from './SearchForm.module.css';
 
 export const SearchForm = (props: Props) => {
-    const {className, hint} = props;
+    const {className, search, hint} = props;
 
-    const {search, handleChange} = useSearchForm(props);
+    const {handleChange} = useSearchForm(props);
 
     return (
         <div className={clsx(styles.root, className)} role="search">

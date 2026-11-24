@@ -6,7 +6,7 @@ import {Toast} from './Toast/Toast';
 import styles from './RootLayout.module.css';
 
 export const RootLayout = () => {
-    const {favorites, favoritesLabel, toastMessage} = useRootLayout();
+    const {favoritesLabel} = useRootLayout();
 
     return (
         <div className={styles.layout}>
@@ -14,8 +14,8 @@ export const RootLayout = () => {
                 <NavLink to="/" end>Home</NavLink>
                 <NavLink to="/favorites">{favoritesLabel}</NavLink>
             </nav>
-            <Outlet context={favorites}  />
-            <Toast message={toastMessage} />
+            <Outlet />
+            <Toast />
         </div>
     );
 };

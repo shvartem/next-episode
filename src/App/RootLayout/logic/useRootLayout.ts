@@ -1,24 +1,11 @@
-import type {FavoriteUpdateResult} from '../types';
-import {useFavoritesState} from './useFavoritesState';
-import {useToast} from './useToast';
-
-const FAVORITE_UPDATE_MESSAGES: Record<FavoriteUpdateResult, string> = {
-    added: 'Added to favorites.',
-    removed: 'Removed from favorites.',
-    error: 'Could not update favorites. Try again.',
-};
+import {useEffect} from 'react';
+import {useStore} from 'zustand';
+import {favoritesStore} from '~/stores/favoritesStore';
+import {loadFavorites} from './tasks/loadFavorites';
 
 export const useRootLayout = () => {
-    const {toastMessage, showToast, clearToast} = useToast();
-    const favorites = useFavoritesState({
-        onUpdateStart: clearToast,
-        onUpdateResult: (result) => showToast(FAVORITE_UPDATE_MESSAGES[result]),
-    });
-    const {snapshot} = favorites;
+    const count = useStore(favoritesStore, state => state.items?.length);
+    useEffect(() => { void loadFavorites(); }, []);
 
-    return {
-        favorites,
-        favoritesLabel: snapshot ? `Favorites (${snapshot.count})` : 'Favorites',
-        toastMessage,
-    };
+    return {favoritesLabel: count === undefined ? 'Favorites' : `Favorites (${count})`};
 };

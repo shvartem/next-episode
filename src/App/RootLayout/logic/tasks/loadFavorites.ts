@@ -1,10 +1,15 @@
 import {favoritesRepository} from '~/api';
-import type {FavoritesTaskResult} from '../../types';
+import {favoritesStore} from '~/stores/favoritesStore';
 
-export const loadFavorites = async (): Promise<FavoritesTaskResult> => {
-    try {
-        return [null, await favoritesRepository.getFavorites()];
-    } catch (error) {
-        return [error instanceof Error ? error : new Error('Could not load favorites.', {cause: error}), null];
-    }
-};
+let pending: Promise<void> | undefined;
+
+export function loadFavorites() {
+    if (favoritesStore.getState().items !== null) return;
+    pending ??= favoritesRepository.getFavorites().then(({items}) => {
+        favoritesStore.setState({items, loadFailed: false});
+    }).catch(() => {
+        favoritesStore.setState({loadFailed: true});
+    }).finally(() => { pending = undefined; });
+
+    return pending;
+}

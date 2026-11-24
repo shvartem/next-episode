@@ -1,9 +1,9 @@
-import type {Props} from './types';
+import {useToast} from './logic/useToast';
 
 import styles from './Toast.module.css';
 
-export const Toast = (props: Props) => {
-    const {message} = props;
+export const Toast = () => {
+    const message = useToast();
 
     return (
         <div className={styles.root} role="status">

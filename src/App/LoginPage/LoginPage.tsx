@@ -3,10 +3,10 @@ import {useLoginPage} from './logic/useLoginPage';
 import styles from './LoginPage.module.css';
 
 export function LoginPage() {
-    const {isLoggedIn, isSubmitting, error, handleSubmit} = useLoginPage();
+    const {isLoggedIn, redirectTo, isSubmitting, error, handleSubmit} = useLoginPage();
 
     if (isLoggedIn) {
-        return <Navigate to="/" replace />;
+        return <Navigate to={redirectTo} replace />;
     }
 
     return (

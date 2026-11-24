@@ -1,3 +1,4 @@
+import {createPath, useLocation} from 'react-router';
 import {useStore} from 'zustand';
 
 import type {Show} from '~/api';
@@ -7,6 +8,7 @@ import {favoritesStore} from '~/stores/favoritesStore';
 const EMPTY_ITEMS: Show[] = [];
 
 export const useFavoritesPage = () => {
+    const loginState = {returnTo: createPath(useLocation())};
     const isLoggedIn = useStore(sessionStore, (state) => state.session !== null);
 
     const items = useStore(favoritesStore, (state) => state.items);
@@ -19,6 +21,7 @@ export const useFavoritesPage = () => {
 
     return {
         isLoggedIn,
+        loginState,
         items: list,
         hasFavorites: list.length > 0,
         isLoading: items === null && !loadFailed,

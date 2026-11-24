@@ -1,6 +1,6 @@
 import {Router} from 'express';
 import {getSession} from '../auth/sessions.ts';
-import type {FavoritesResult} from '../../../shared/favorites.ts';
+import type {FavoriteResult, FavoritesResult} from '../../../shared/favorites.ts';
 import {favoritesPresenter} from './favoritesPresenter.ts';
 
 interface OwnerLocals {
@@ -40,7 +40,7 @@ favoritesRouter.get<unknown, FavoritesResult, unknown, unknown, OwnerLocals>('/'
 });
 
 type ShowParams = {showId: string};
-type MutationResult = FavoritesResult | {error: string};
+type MutationResult = FavoriteResult | {error: string};
 
 favoritesRouter.put<ShowParams, MutationResult, unknown, unknown, OwnerLocals>('/:showId', async (req, res) => {
     const {ownerId} = res.locals;
@@ -55,12 +55,13 @@ favoritesRouter.put<ShowParams, MutationResult, unknown, unknown, OwnerLocals>('
             return;
         }
 
-        res.json(result);
+        res.status(result.created ? 201 : 200).json({item: result.item});
     } catch {
         res.status(502).json({error: 'Unable to load show'});
     }
 });
 
-favoritesRouter.delete<ShowParams, FavoritesResult, unknown, unknown, OwnerLocals>('/:showId', (req, res) => {
-    res.json(favoritesPresenter.remove(res.locals.ownerId, Number(req.params.showId)));
+favoritesRouter.delete<ShowParams, never, unknown, unknown, OwnerLocals>('/:showId', (req, res) => {
+    favoritesPresenter.remove(res.locals.ownerId, Number(req.params.showId));
+    res.status(204).end();
 });

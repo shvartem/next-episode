@@ -9,13 +9,21 @@ export const favoritesStore = {
         return collection ? Object.values(collection) : [];
     },
 
-    has(ownerId: string, showId: number): boolean {
-        return favorite[ownerId]?.[showId] !== undefined;
+    get(ownerId: string, showId: number): Show | undefined {
+        return favorite[ownerId]?.[showId];
     },
 
-    add(ownerId: string, show: Show): void {
+    add(ownerId: string, show: Show): {item: Show; created: boolean} {
+        const existing = favorite[ownerId]?.[show.id];
+
+        if (existing) {
+            return {item: existing, created: false};
+        }
+
         const collection = favorite[ownerId] ??= Object.create(null);
-        collection[show.id] ??= show;
+        collection[show.id] = show;
+
+        return {item: show, created: true};
     },
 
     remove(ownerId: string, showId: number): void {

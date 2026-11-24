@@ -1,5 +1,5 @@
 import type {Session} from '../../shared/auth';
-import type {FavoritesResult} from '../../shared/favorites';
+import type {FavoriteResult, FavoritesResult} from '../../shared/favorites';
 import type {SearchQuery, SearchResult} from '../../shared/shows';
 import {createApi} from './createApi';
 import type {RequestOptions} from './types';
@@ -36,8 +36,8 @@ export const showsRepository = {
     },
 };
 
-async function requestFavorites(endpoint: string, method: RequestOptions['method'], token: string, signal?: AbortSignal) {
-    return api.createRequest<FavoritesResult>({
+async function requestFavorites<T>(endpoint: string, method: RequestOptions['method'], token: string, signal?: AbortSignal) {
+    return api.createRequest<T>({
         endpoint,
         method,
         signal,
@@ -46,10 +46,14 @@ async function requestFavorites(endpoint: string, method: RequestOptions['method
 }
 
 export const favoritesRepository = {
-    getFavorites: (token: string, signal?: AbortSignal) => requestFavorites('/favorites', 'GET', token, signal),
-    addFavorite: (showId: number, token: string) => requestFavorites(`/favorites/${showId}`, 'PUT', token),
-    removeFavorite: (showId: number, token: string) => requestFavorites(`/favorites/${showId}`, 'DELETE', token),
+    getFavorites: (token: string, signal?: AbortSignal) => requestFavorites<FavoritesResult>('/favorites', 'GET', token, signal),
+    addFavorite: (showId: number, token: string) => requestFavorites<FavoriteResult>(`/favorites/${showId}`, 'PUT', token),
+    removeFavorite: (showId: number, token: string) => api.createEmptyRequest({
+        endpoint: `/favorites/${showId}`,
+        method: 'DELETE',
+        headers: {Authorization: `Bearer ${token}`},
+    }),
 };
 
-export type {FavoritesResult} from '../../shared/favorites';
+export type {FavoriteResult, FavoritesResult} from '../../shared/favorites';
 export type {SearchQuery, SearchResult, Show} from '../../shared/shows';

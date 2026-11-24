@@ -1,37 +1,38 @@
 import {sessionStore} from '~/stores/sessionStore';
 import {favoritesStore} from '~/stores/favoritesStore';
-import type {FavoriteUpdateResult} from './types';
+import type {ToggleFavoriteTaskResult} from './types';
 import {addFavorite} from './addFavorite';
 import {removeFavorite} from './removeFavorite';
 
-export function toggleFavorite(showId: number): Promise<FavoriteUpdateResult | undefined> | undefined {
+export async function toggleFavorite(showId: number): Promise<ToggleFavoriteTaskResult> {
     const token = sessionStore.getState().session?.token;
 
-    const {items, isUpdating} = favoritesStore.getState();
+    const {items} = favoritesStore.getState();
 
-    if (!token || items === null || isUpdating) {
-        return;
+    if (!token || items === null) {
+        return [null, 'skipped'];
     }
 
     const isFavorite = items.some((item) => item.id === showId);
 
-    favoritesStore.setState({isUpdating: true});
-
     const update = isFavorite ? removeFavorite : addFavorite;
 
-    return update(showId, token).then(([error, result]) => {
-        if (sessionStore.getState().session?.token !== token) {
-            return;
-        }
+    const [error, result] = await update(showId, token);
 
-        if (error !== null) {
-            favoritesStore.setState({isUpdating: false});
+    if (sessionStore.getState().session?.token !== token) {
+        return [null, 'skipped'];
+    }
 
-            return 'error';
-        }
+    if (error !== null) {
+        return [error, null];
+    }
 
-        favoritesStore.setState({items: result.items, isUpdating: false});
+    favoritesStore.setState((state) => {
+        const remaining = (state.items ?? []).filter((item) => item.id !== showId);
+        const nextItems = result ? [...remaining, result.item].sort((a, b) => a.id - b.id) : remaining;
 
-        return isFavorite ? 'removed' : 'added';
+        return {items: nextItems};
     });
+
+    return [null, isFavorite ? 'removed' : 'added'];
 }

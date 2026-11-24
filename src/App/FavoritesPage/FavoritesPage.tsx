@@ -5,13 +5,13 @@ import {useFavoritesPage} from './logic/useFavoritesPage';
 import styles from './FavoritesPage.module.css';
 
 export const FavoritesPage = () => {
-    const {isLoggedIn, items, hasFavorites, isLoading, loadError} = useFavoritesPage();
+    const {isLoggedIn, loginState, items, hasFavorites, isLoading, loadError} = useFavoritesPage();
 
     const renderContent = () => {
         if (!isLoggedIn) {
             return (
                 <p>
-                    <Link to="/login">Log in</Link> to see your favorites.
+                    <Link to="/login" state={loginState}>Log in</Link> to see your favorites.
                 </p>
             );
         }

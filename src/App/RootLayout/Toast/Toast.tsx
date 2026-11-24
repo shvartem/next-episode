@@ -3,11 +3,11 @@ import {useToast} from './logic/useToast';
 import styles from './Toast.module.css';
 
 export const Toast = () => {
-    const message = useToast();
+    const toast = useToast();
 
     return (
         <div className={styles.root} role="status">
-            {message && <div className={styles.message}>{message}</div>}
+            {toast && <div className={styles.message} data-tone={toast.tone}>{toast.message}</div>}
         </div>
     );
 };

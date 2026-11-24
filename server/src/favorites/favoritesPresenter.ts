@@ -14,13 +14,11 @@ export const favoritesPresenter = {
         return toFavoritesResult(getFavorites(ownerId));
     },
 
-    async add(ownerId: string, showId: number): Promise<FavoritesResult | null> {
-        const items = await addFavorite(ownerId, showId, getTvMazeShow);
-
-        return items === null ? null : toFavoritesResult(items);
+    add(ownerId: string, showId: number) {
+        return addFavorite(ownerId, showId, getTvMazeShow);
     },
 
-    remove(ownerId: string, showId: number): FavoritesResult {
-        return toFavoritesResult(removeFavorite(ownerId, showId));
+    remove(ownerId: string, showId: number): void {
+        removeFavorite(ownerId, showId);
     },
 };

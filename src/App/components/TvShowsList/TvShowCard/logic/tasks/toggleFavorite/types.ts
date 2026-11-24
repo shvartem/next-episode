@@ -1,7 +1,9 @@
-import type {FavoritesResult} from '~/api';
+export type FavoritesTaskResult<T> =
+    | [error: null, result: T]
+    | [error: Error, result: null];
 
-export type FavoritesTaskResult =
-    | [error: null, snapshot: FavoritesResult]
-    | [error: Error, snapshot: null];
+export type FavoriteUpdateResult = 'added' | 'removed';
 
-export type FavoriteUpdateResult = 'added' | 'removed' | 'error';
+export type ToggleFavoriteTaskResult =
+    | [error: null, result: FavoriteUpdateResult | 'skipped']
+    | [error: Error, result: null];

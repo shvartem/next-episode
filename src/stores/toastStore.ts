@@ -1,3 +1,10 @@
 import {createStore} from 'zustand/vanilla';
 
-export const toastStore = createStore<{toast: {message: string} | null}>(() => ({toast: null}));
+export type ToastTone = 'neutral' | 'success' | 'warning';
+
+interface Toast {
+    message: string;
+    tone: ToastTone;
+}
+
+export const toastStore = createStore<{toast: Toast | null}>(() => ({toast: null}));

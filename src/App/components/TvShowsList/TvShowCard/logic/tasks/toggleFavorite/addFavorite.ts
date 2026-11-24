@@ -1,7 +1,7 @@
-import {favoritesRepository} from '~/api';
+import {favoritesRepository, type FavoriteResult} from '~/api';
 import type {FavoritesTaskResult} from './types';
 
-export const addFavorite = async (showId: number, token: string): Promise<FavoritesTaskResult> => {
+export const addFavorite = async (showId: number, token: string): Promise<FavoritesTaskResult<FavoriteResult>> => {
     try {
         return [null, await favoritesRepository.addFavorite(showId, token)];
     } catch (error) {

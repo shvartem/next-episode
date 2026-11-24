@@ -1,26 +1,11 @@
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import type {Session} from '../../shared/auth.ts';
+import {show, tvMazeShow} from './favoriteShowFixture.ts';
 import {setupTestServer} from './setupTestServer.ts';
 
 const apiUrl = setupTestServer();
 const request = globalThis.fetch;
-const show = {
-    id: 123,
-    name: 'Example show',
-    url: 'https://www.tvmaze.com/shows/123/example',
-    genres: ['Drama'],
-    posterUrl: null,
-    rating: 8.5,
-    premiered: '2024-01-01',
-    status: 'Ended',
-    type: 'Scripted',
-    language: 'English',
-    channel: 'Example channel',
-    summary: null,
-};
-const {posterUrl, channel, rating, ...tvMazeFields} = show;
-const tvMazeShow = {...tvMazeFields, image: posterUrl, network: {name: channel}, rating: {average: rating}};
 const empty = {items: [], count: 0};
 const saved = {items: [show], count: 1};
 
@@ -51,20 +36,27 @@ test('favorites survive logout and are isolated by email', async t => {
         return Response.json(tvMazeShow);
     });
     assert.deepEqual(await (await call('GET', '', owner)).json(), empty);
-    assert.deepEqual(await (await call('PUT', '/123', owner)).json(), saved);
+    const created = await call('PUT', '/123', owner);
+    assert.equal(created.status, 201);
+    assert.deepEqual(await created.json(), {item: show});
     upstream.mock.mockImplementation(async () => { throw new Error('TVmaze is offline'); });
 
     const result = await call('GET', '', owner);
     assert.equal(result.headers.get('cache-control'), 'no-store');
     assert.deepEqual(await result.json(), saved);
-    assert.deepEqual(await (await call('PUT', '/123', owner)).json(), saved);
+    const existing = await call('PUT', '/123', owner);
+    assert.equal(existing.status, 200);
+    assert.deepEqual(await existing.json(), {item: show});
     assert.deepEqual(await (await call('GET', '', other)).json(), empty);
     await request(apiUrl('/session'), {method: 'DELETE', headers: {Authorization: `Bearer ${owner}`}});
     assert.equal((await call('GET', '', owner)).status, 401);
     const returning = await login('OWNER@example.com');
     assert.deepEqual(await (await call('GET', '', returning)).json(), saved);
-    assert.deepEqual(await (await call('DELETE', '/123', returning)).json(), empty);
-    assert.deepEqual(await (await call('DELETE', '/123', returning)).json(), empty);
+    const removed = await call('DELETE', '/123', returning);
+    assert.equal(removed.status, 204);
+    assert.equal(await removed.text(), '');
+    assert.equal((await call('DELETE', '/123', returning)).status, 204);
+    assert.deepEqual(await (await call('GET', '', returning)).json(), empty);
     assert.equal(upstream.mock.callCount(), 1);
 });
 
@@ -76,11 +68,13 @@ test('removing favorites preserves other cards and other owners', async t => {
         Response.json({...tvMazeShow, id: Number(new URL(url).pathname.split('/').at(-1))}));
 
     for (const [id, user] of [[123, owner], [124, owner], [123, other]] as const) {
-        assert.equal((await call('PUT', `/${id}`, user)).status, 200);
+        assert.equal((await call('PUT', `/${id}`, user)).status, 201);
     }
 
-    assert.deepEqual(await (await call('DELETE', '/124', owner)).json(), saved);
-    assert.deepEqual(await (await call('DELETE', '/123', owner)).json(), empty);
+    assert.equal((await call('DELETE', '/124', owner)).status, 204);
+    assert.deepEqual(await (await call('GET', '', owner)).json(), saved);
+    assert.equal((await call('DELETE', '/123', owner)).status, 204);
+    assert.deepEqual(await (await call('GET', '', owner)).json(), empty);
     assert.deepEqual(await (await call('GET', '', other)).json(), saved);
 });
 
@@ -108,5 +102,7 @@ test('favorites require a session, validate IDs and allow retry after TVmaze err
     upstream.mock.mockImplementationOnce(async () => Response.json({...tvMazeShow, id: 124}));
     assert.equal((await call('PUT', '/123', owner)).status, 502);
     assert.deepEqual(await (await call('GET', '', owner)).json(), empty);
-    assert.deepEqual(await (await call('PUT', '/123', owner)).json(), saved);
+    const retried = await call('PUT', '/123', owner);
+    assert.equal(retried.status, 201);
+    assert.deepEqual(await retried.json(), {item: show});
 });

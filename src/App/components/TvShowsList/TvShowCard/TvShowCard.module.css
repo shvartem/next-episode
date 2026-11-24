@@ -56,7 +56,15 @@
   cursor: pointer;
 
   &[aria-pressed='true'] {
-    color: #a26700;
+    color: #b45309;
+    background: #fff1c2;
+    border-color: #e6a827;
+
+    @media (prefers-color-scheme: dark) {
+      color: #ffd05a;
+      background: #3c2a09;
+      border-color: #a87521;
+    }
   }
 
   &:disabled {

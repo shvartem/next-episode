@@ -6,15 +6,13 @@ export async function addFavorite(
     showId: number,
     loadShow: (showId: number) => Promise<Show | null>,
 ) {
-    if (!favoritesStore.has(ownerId, showId)) {
-        const show = await loadShow(showId);
+    const existing = favoritesStore.get(ownerId, showId);
 
-        if (show === null) {
-            return null;
-        }
-
-        favoritesStore.add(ownerId, show);
+    if (existing) {
+        return {item: existing, created: false};
     }
 
-    return favoritesStore.list(ownerId);
+    const show = await loadShow(showId);
+
+    return show === null ? null : favoritesStore.add(ownerId, show);
 }

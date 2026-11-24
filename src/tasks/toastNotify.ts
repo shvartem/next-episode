@@ -1,7 +1,8 @@
 import {toastStore} from '~/stores/toastStore';
+import type {ToastTone} from '~/stores/toastStore';
 
-export function toastNotify(message: string, durationMs: number): void {
-    const toast = {message};
+export function toastNotify(message: string, durationMs: number, tone: ToastTone = 'neutral'): void {
+    const toast = {message, tone};
     toastStore.setState({toast});
 
     setTimeout(() => {

@@ -1,4 +1,5 @@
 import {useEffect, useState} from 'react';
+import {createPath, matchPath, useLocation} from 'react-router';
 import {useStore} from 'zustand';
 import {favoritesStore} from '~/stores/favoritesStore';
 import {sessionStore} from '~/stores/sessionStore';
@@ -7,6 +8,8 @@ import {toastNotify} from '~/tasks/toastNotify';
 import {loadFavorites} from './tasks/loadFavorites';
 
 export const useRootLayout = () => {
+    const location = useLocation();
+    const loginState = matchPath('/login', location.pathname) ? location.state : {returnTo: createPath(location)};
     const count = useStore(favoritesStore, (state) => state.items?.length);
     const token = useStore(sessionStore, (state) => state.session?.token);
 
@@ -42,5 +45,5 @@ export const useRootLayout = () => {
 
     const favoritesLabel = count === undefined ? 'Favorites' : `Favorites (${count})`;
 
-    return {favoritesLabel, email, isLoggingOut, handleLogout};
+    return {favoritesLabel, loginState, email, isLoggingOut, handleLogout};
 };

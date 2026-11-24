@@ -9,8 +9,21 @@
 }
 
 .message {
+  min-width: 0;
+  max-inline-size: 360px;
   padding: 10px 16px;
   border-radius: 8px;
   background: var(--text-h);
   color: var(--bg);
+  overflow-wrap: anywhere;
+
+  &[data-tone='success'] {
+    background: #166534;
+    color: #fff;
+  }
+
+  &[data-tone='warning'] {
+    background: #92400e;
+    color: #fff;
+  }
 }

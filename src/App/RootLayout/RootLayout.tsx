@@ -6,7 +6,7 @@ import {Toast} from './Toast/Toast';
 import styles from './RootLayout.module.css';
 
 export const RootLayout = () => {
-    const {favoritesLabel, email, isLoggingOut, handleLogout} = useRootLayout();
+    const {favoritesLabel, loginState, email, isLoggingOut, handleLogout} = useRootLayout();
 
     return (
         <div className={styles.layout}>
@@ -19,7 +19,7 @@ export const RootLayout = () => {
                         <span className={styles.email}>{email}</span>
                         <button type="button" disabled={isLoggingOut} onClick={handleLogout}>Log out</button>
                     </>
-                ) : <NavLink to="/login">Log in</NavLink>}
+                ) : <NavLink to="/login" state={loginState}>Log in</NavLink>}
             </nav>
 
             <Outlet />

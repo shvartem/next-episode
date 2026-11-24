@@ -1,6 +1,8 @@
+import {useState} from 'react';
 import {useStore} from 'zustand';
 import {sessionStore} from '~/stores/sessionStore';
 import {favoritesStore} from '~/stores/favoritesStore';
+import type {ToastTone} from '~/stores/toastStore';
 import {toastNotify} from '~/tasks/toastNotify';
 import {toggleFavorite} from './tasks/toggleFavorite/toggleFavorite';
 import type {FavoriteUpdateResult} from './tasks/toggleFavorite/types';
@@ -8,10 +10,9 @@ import type {Props} from '../types';
 
 const FAVORITE_TOAST_DURATION_MS = 4_000;
 
-const FAVORITE_UPDATE_MESSAGES: Record<FavoriteUpdateResult, string> = {
-    added: 'Added to favorites.',
-    removed: 'Removed from favorites.',
-    error: 'Could not update favorites. Try again.',
+const FAVORITE_UPDATE_TOASTS: Record<FavoriteUpdateResult, {message: (name: string) => string; tone: ToastTone}> = {
+    added: {message: name => `“${name}” added to favorites.`, tone: 'success'},
+    removed: {message: name => `“${name}” removed from favorites.`, tone: 'warning'},
 };
 
 const getPlainText = (html: string) => {
@@ -22,27 +23,33 @@ const getPlainText = (html: string) => {
 
 export const useTvShowCard = (props: Props) => {
     const {card: show} = props;
+    const [isUpdating, setIsUpdating] = useState(false);
 
     const isFavorite = useStore(favoritesStore, state => state.items?.some(item => item.id === show.id) ?? false);
 
     const isLoggedIn = useStore(sessionStore, state => state.session !== null);
 
-    const isFavoritesBusy = useStore(favoritesStore, state => state.items === null || state.isUpdating);
+    const areFavoritesLoaded = useStore(favoritesStore, state => state.items !== null);
 
     const handleFavoriteClick = async () => {
-        const update = toggleFavorite(show.id);
-
-        if (!update) {
+        if (isUpdating || !isLoggedIn || !areFavoritesLoaded) {
             return;
         }
 
-        const result = await update;
+        setIsUpdating(true);
 
-        if (!result) {
+        const [error, result] = await toggleFavorite(show.id).finally(() => setIsUpdating(false));
+
+        if (error !== null) {
+            toastNotify(`Could not update favorites for “${show.name}”. Try again.`, FAVORITE_TOAST_DURATION_MS);
+
             return;
         }
 
-        toastNotify(FAVORITE_UPDATE_MESSAGES[result], FAVORITE_TOAST_DURATION_MS);
+        if (result !== 'skipped') {
+            const {message, tone} = FAVORITE_UPDATE_TOASTS[result];
+            toastNotify(message(show.name), FAVORITE_TOAST_DURATION_MS, tone);
+        }
     };
 
     const details = [show.premiered?.slice(0, 4), show.status, show.type, show.language, show.channel]
@@ -62,7 +69,7 @@ export const useTvShowCard = (props: Props) => {
         summary: show.summary ? getPlainText(show.summary) : '',
         favoriteLabel: isLoggedIn ? `Favorite ${show.name}` : 'Log in to add favorites',
         isFavorite,
-        isFavoriteDisabled: !isLoggedIn || isFavoritesBusy,
+        isFavoriteDisabled: !isLoggedIn || !areFavoritesLoaded || isUpdating,
         handleFavoriteClick,
     };
 };

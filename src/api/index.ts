@@ -1,3 +1,4 @@
+import type {Session} from '../../shared/auth';
 import {FAVORITES_OWNER_HEADER} from '../../shared/favorites';
 import type {FavoritesResult} from '../../shared/favorites';
 import type {SearchQuery, SearchResult} from '../../shared/shows';
@@ -6,6 +7,24 @@ import type {RequestOptions} from './types';
 
 const api = createApi({baseUrl: import.meta.env.VITE_API_BASE_URL || '/api'});
 const FAVORITES_OWNER_KEY = 'next-episode:favorites-owner';
+
+export const sessionRepository = {
+    login: (email: string) => api.createRequest<Session>({
+        endpoint: '/session',
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({email}),
+    }),
+    get: (token: string) => api.createRequest<Session>({
+        endpoint: '/session',
+        headers: {Authorization: `Bearer ${token}`},
+    }),
+    logout: (token: string) => api.createRequest<null>({
+        endpoint: '/session',
+        method: 'DELETE',
+        headers: {Authorization: `Bearer ${token}`},
+    }),
+};
 
 export const showsRepository = {
     getShowsList: ({q, page, genre}: SearchQuery, signal?: AbortSignal) => {

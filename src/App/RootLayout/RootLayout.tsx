@@ -12,7 +12,7 @@ export const RootLayout = () => {
         <div className={styles.layout}>
             <nav className={styles.navigation}>
                 <NavLink to="/" end>Home</NavLink>
-                <NavLink to="/favorites">{favoritesLabel}</NavLink>
+                {email && <NavLink to="/favorites">{favoritesLabel}</NavLink>}
                 {email ? (
                     <>
                         <span className={styles.email}>{email}</span>

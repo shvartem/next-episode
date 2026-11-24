@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import {FAVORITES_OWNER_HEADER} from '../../../shared/favorites.ts';
+import {getSession} from '../auth/sessions.ts';
 import type {FavoritesResult} from '../../../shared/favorites.ts';
 import {favoritesPresenter} from './favoritesPresenter.ts';
 
@@ -7,19 +7,17 @@ interface OwnerLocals {
     ownerId: string;
 }
 
-const UUID_V4 = /^[\da-f]{8}-[\da-f]{4}-4[\da-f]{3}-[89ab][\da-f]{3}-[\da-f]{12}$/i;
-
 export const favoritesRouter = Router();
 
 favoritesRouter.use<unknown, unknown, unknown, unknown, OwnerLocals>((req, res, next) => {
     res.set('Cache-Control', 'no-store');
-    const ownerId = req.get(FAVORITES_OWNER_HEADER);
-    if (!ownerId || !UUID_V4.test(ownerId)) {
-        res.status(400).json({error: 'Invalid favorites owner'});
+    const session = getSession(req);
+    if (!session) {
+        res.status(401).json({error: 'Login required'});
         return;
     }
 
-    res.locals.ownerId = ownerId.toLowerCase();
+    res.locals.ownerId = session.email;
     next();
 });
 

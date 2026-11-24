@@ -9,7 +9,7 @@ export function createSession(email: string) {
     return {email, token};
 }
 
-export function getSession(req: Request) {
+export function getSession(req: Pick<Request, 'get'>) {
     const token = req.get('Authorization')?.match(/^Bearer (\S+)$/i)?.[1];
     const email = token && sessions[token];
     return token && email ? {email, token} : null;

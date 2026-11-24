@@ -1,12 +1,14 @@
+import {Link} from 'react-router';
 import {TvShowsList} from '../components/TvShowsList/TvShowsList';
 import {useFavoritesPage} from './logic/useFavoritesPage';
 
 import styles from './FavoritesPage.module.css';
 
 export const FavoritesPage = () => {
-    const {items, hasFavorites, isLoading, loadError} = useFavoritesPage();
+    const {isLoggedIn, items, hasFavorites, isLoading, loadError} = useFavoritesPage();
 
     const renderContent = () => {
+        if (!isLoggedIn) return <p><Link to="/login">Log in</Link> to see your favorites.</p>;
         if (isLoading) return <p role="status">Loading favorites…</p>;
         if (loadError) return <p role="alert">{loadError}</p>;
         if (!hasFavorites) return <p>No favorites yet.</p>;

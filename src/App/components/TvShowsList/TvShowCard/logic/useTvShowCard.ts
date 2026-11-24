@@ -1,4 +1,5 @@
 import {useStore} from 'zustand';
+import {sessionStore} from '~/stores/sessionStore';
 import {favoritesStore} from '~/stores/favoritesStore';
 import {toastNotify} from '~/tasks/toastNotify';
 import {toggleFavorite} from './tasks/toggleFavorite/toggleFavorite';
@@ -24,7 +25,8 @@ export const useTvShowCard = (props: Props) => {
 
     const isFavorite = useStore(favoritesStore, state => state.items?.some(item => item.id === show.id) ?? false);
 
-    const isFavoriteDisabled = useStore(favoritesStore, state => state.items === null || state.isUpdating);
+    const isLoggedIn = useStore(sessionStore, state => state.session !== null);
+    const isFavoritesBusy = useStore(favoritesStore, state => state.items === null || state.isUpdating);
 
     const handleFavoriteClick = async () => {
         const update = toggleFavorite(show.id);
@@ -32,6 +34,8 @@ export const useTvShowCard = (props: Props) => {
         if (!update) return;
 
         const result = await update;
+
+        if (!result) return;
 
         toastNotify(FAVORITE_UPDATE_MESSAGES[result], FAVORITE_TOAST_DURATION_MS);
     };
@@ -51,9 +55,9 @@ export const useTvShowCard = (props: Props) => {
         genres: show.genres,
         hasGenres: !!show.genres.length,
         summary: show.summary ? getPlainText(show.summary) : '',
-        favoriteLabel: `Favorite ${show.name}`,
+        favoriteLabel: isLoggedIn ? `Favorite ${show.name}` : 'Log in to add favorites',
         isFavorite,
-        isFavoriteDisabled,
+        isFavoriteDisabled: !isLoggedIn || isFavoritesBusy,
         handleFavoriteClick,
     };
 };

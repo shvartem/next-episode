@@ -1,6 +1,6 @@
 import type {Show} from '../../../shared/shows.ts';
 
-const favorite: Partial<Record<string, Record<number, Show>>> = {};
+const favorite: Partial<Record<string, Record<number, Show>>> = Object.create(null);
 
 export const favoritesStore = {
     list(ownerId: string): Show[] {
@@ -13,7 +13,7 @@ export const favoritesStore = {
     },
 
     add(ownerId: string, show: Show): void {
-        const collection = favorite[ownerId] ??= {};
+        const collection = favorite[ownerId] ??= Object.create(null);
         collection[show.id] ??= show;
     },
 

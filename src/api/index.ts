@@ -1,12 +1,10 @@
 import type {Session} from '../../shared/auth';
-import {FAVORITES_OWNER_HEADER} from '../../shared/favorites';
 import type {FavoritesResult} from '../../shared/favorites';
 import type {SearchQuery, SearchResult} from '../../shared/shows';
 import {createApi} from './createApi';
 import type {RequestOptions} from './types';
 
 const api = createApi({baseUrl: import.meta.env.VITE_API_BASE_URL || '/api'});
-const FAVORITES_OWNER_KEY = 'next-episode:favorites-owner';
 
 export const sessionRepository = {
     login: (email: string) => api.createRequest<Session>({
@@ -34,28 +32,19 @@ export const showsRepository = {
     },
 };
 
-function getFavoritesOwner(): string {
-    const storedOwner = localStorage.getItem(FAVORITES_OWNER_KEY);
-    if (storedOwner) return storedOwner;
-
-    const owner = crypto.randomUUID();
-    localStorage.setItem(FAVORITES_OWNER_KEY, owner);
-    return owner;
-}
-
-async function requestFavorites(endpoint: string, method: RequestOptions['method'], signal?: AbortSignal) {
+async function requestFavorites(endpoint: string, method: RequestOptions['method'], token: string, signal?: AbortSignal) {
     return api.createRequest<FavoritesResult>({
         endpoint,
         method,
         signal,
-        headers: {[FAVORITES_OWNER_HEADER]: getFavoritesOwner()},
+        headers: {Authorization: `Bearer ${token}`},
     });
 }
 
 export const favoritesRepository = {
-    getFavorites: (signal?: AbortSignal) => requestFavorites('/favorites', 'GET', signal),
-    addFavorite: (showId: number) => requestFavorites(`/favorites/${showId}`, 'PUT'),
-    removeFavorite: (showId: number) => requestFavorites(`/favorites/${showId}`, 'DELETE'),
+    getFavorites: (token: string, signal?: AbortSignal) => requestFavorites('/favorites', 'GET', token, signal),
+    addFavorite: (showId: number, token: string) => requestFavorites(`/favorites/${showId}`, 'PUT', token),
+    removeFavorite: (showId: number, token: string) => requestFavorites(`/favorites/${showId}`, 'DELETE', token),
 };
 
 export type {FavoritesResult} from '../../shared/favorites';

@@ -1,5 +1,4 @@
 import express from 'express';
-import {FAVORITES_OWNER_HEADER} from '../../shared/favorites.ts';
 import {authRouter} from './auth/authRouter.ts';
 import {favoritesRouter} from './favorites/favoritesRouter.ts';
 import {logRequest} from './logRequest.ts';
@@ -25,7 +24,7 @@ app.use('/api/session', (req, res, next) => {
 app.use('/api/favorites', (req, res, next) => {
     if (req.method === 'OPTIONS' && req.get('Access-Control-Request-Method')) {
         res.set('Access-Control-Allow-Methods', 'GET, PUT, DELETE');
-        res.set('Access-Control-Allow-Headers', FAVORITES_OWNER_HEADER);
+        res.set('Access-Control-Allow-Headers', 'Authorization');
         res.status(204).end();
         return;
     }

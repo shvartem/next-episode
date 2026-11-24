@@ -25,3 +25,30 @@ test('email login creates a session that logout revokes', async () => {
     assert.equal((await fetch(apiUrl('/session'), {method: 'DELETE', headers})).status, 200);
     assert.equal((await fetch(apiUrl('/session'), {headers})).status, 401);
 });
+
+test('GitHub Pages can send session and favorites headers', async () => {
+    const origin = 'https://shvartem.github.io';
+    const routes = [
+        ['/session', 'GET', 'Authorization, Content-Type'],
+        ['/session', 'POST', 'Authorization, Content-Type'],
+        ['/session', 'DELETE', 'Authorization, Content-Type'],
+        ['/favorites', 'GET', 'Authorization'],
+        ['/favorites/123', 'PUT', 'Authorization'],
+        ['/favorites/123', 'DELETE', 'Authorization'],
+    ];
+
+    for (const [path, method, headers] of routes) {
+        const result = await fetch(apiUrl(path), {
+            method: 'OPTIONS',
+            headers: {
+                Origin: origin,
+                'Access-Control-Request-Method': method,
+                'Access-Control-Request-Headers': headers.toLowerCase(),
+            },
+        });
+        assert.equal(result.status, 204);
+        assert.equal(result.headers.get('access-control-allow-origin'), origin);
+        assert.ok(result.headers.get('access-control-allow-methods')?.split(', ').includes(method));
+        assert.equal(result.headers.get('access-control-allow-headers'), headers);
+    }
+});

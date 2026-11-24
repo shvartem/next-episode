@@ -8,7 +8,13 @@ import {loadFavorites} from './tasks/loadFavorites';
 
 export const useRootLayout = () => {
     const count = useStore(favoritesStore, state => state.items?.length);
-    useEffect(() => { void loadFavorites(); }, []);
+    const token = useStore(sessionStore, state => state.session?.token);
+    useEffect(() => {
+        if (!token) return;
+        const controller = new AbortController();
+        void loadFavorites(token, controller.signal);
+        return () => controller.abort();
+    }, [token]);
 
     const email = useStore(sessionStore, state => state.session?.email);
     const [isLoggingOut, setIsLoggingOut] = useState(false);

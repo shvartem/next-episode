@@ -2,12 +2,14 @@ import {TvShowsResult} from './TvShowsResult/TvShowsResult';
 import {SearchForm} from './SearchForm/SearchForm';
 import {Loader} from './Loader/Loader';
 import {Error} from './Error/Error';
-import {useSearchPage} from './useSearchPage';
+import {useSearchPage} from './logic/useSearchPage';
 
 import styles from './SearchPage.module.css';
 
 export const SearchPage = () => {
-    const {error, isLoading, tvShowsList, searchHint, handleSearch} = useSearchPage();
+    const {
+        search, error, isLoading, result, searchHint, selectedGenre, handleSearch, handleGenreChange, handlePageChange,
+    } = useSearchPage();
 
     const renderContent = () => {
         if (isLoading) {
@@ -18,8 +20,15 @@ export const SearchPage = () => {
             return <Error error={error} />;
         }
 
-        if (tvShowsList) {
-            return <TvShowsResult list={tvShowsList} />;
+        if (result) {
+            return (
+                <TvShowsResult
+                    result={result}
+                    selectedGenre={selectedGenre}
+                    onGenreChange={handleGenreChange}
+                    onPageChange={handlePageChange}
+                />
+            );
         }
 
         return null;
@@ -29,7 +38,7 @@ export const SearchPage = () => {
         <div>
             <h1 className={styles.title}>Search Page</h1>
 
-            <SearchForm hint={searchHint} onSubmit={handleSearch} />
+            <SearchForm search={search} hint={searchHint} onChange={handleSearch} />
 
             {renderContent()}
         </div>

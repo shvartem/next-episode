@@ -3,35 +3,36 @@ import clsx from 'clsx';
 import type {Props} from './types';
 import {EmptyList} from './EmptyList/EmptyList';
 import {GenreFilter} from './GenreFilter/GenreFilter';
-import {TvShowsList} from './TvShowsList/TvShowsList';
+import {TvShowsList} from '../../components/TvShowsList/TvShowsList';
 import {Pagination} from './Pagination/Pagination';
-import {useTvShowsResult} from './useTvShowsResult';
+import {useTvShowsResult} from './logic/useTvShowsResult';
 
 import styles from './TvShowsResult.module.css';
 
 export const TvShowsResult = (props: Props) => {
-    const {className} = props;
+    const {className, selectedGenre, onGenreChange, onPageChange} = props;
 
-    const {hasList, totalCount, genres, selectedGenre, handleGenreChange, page, pageItems, pagesCount, setPage} =
-        useTvShowsResult(props);
+    const {totalCount, genres, page, items, pagesCount, hasMatches, hasItems} = useTvShowsResult(props);
 
     return (
         <div className={clsx(styles.root, className)}>
-            {!hasList && <EmptyList />}
+            {hasMatches && (
+                <GenreFilter
+                    genres={genres}
+                    totalCount={totalCount}
+                    selectedGenre={selectedGenre}
+                    onChange={onGenreChange}
+                />
+            )}
 
-            {hasList && (
+            {hasItems ? (
                 <>
-                    <GenreFilter
-                        genres={genres}
-                        totalCount={totalCount}
-                        selectedGenre={selectedGenre}
-                        onChange={handleGenreChange}
-                    />
+                    <TvShowsList list={items} />
 
-                    <TvShowsList list={pageItems} />
-
-                    <Pagination page={page} pagesCount={pagesCount} onChange={setPage} />
+                    <Pagination page={page} pagesCount={pagesCount} onChange={onPageChange} />
                 </>
+            ) : (
+                <EmptyList />
             )}
         </div>
     );

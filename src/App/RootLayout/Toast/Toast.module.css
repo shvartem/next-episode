@@ -1,0 +1,16 @@
+.root {
+  position: fixed;
+  z-index: 1;
+  inset-inline: 16px;
+  bottom: 24px;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.message {
+  padding: 10px 16px;
+  border-radius: 8px;
+  background: var(--text-h);
+  color: var(--bg);
+}

@@ -1,6 +1,9 @@
-import type {TvShow} from '~/api/types';
+import type {SearchResult} from '~/api';
 
 export interface Props {
     className?: string;
-    list: TvShow[];
+    result: SearchResult;
+    selectedGenre: string | null;
+    onGenreChange: (genre: string | null) => void;
+    onPageChange: (page: number) => void;
 }

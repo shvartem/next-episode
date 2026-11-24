@@ -1,14 +1,21 @@
 import {NavLink, Outlet} from 'react-router';
 
+import {useRootLayout} from './logic/useRootLayout';
+import {Toast} from './Toast/Toast';
+
 import styles from './RootLayout.module.css';
 
 export const RootLayout = () => {
+    const {favoritesLabel} = useRootLayout();
+
     return (
         <div className={styles.layout}>
-            <nav>
-                <NavLink to="/">Home</NavLink>
+            <nav className={styles.navigation}>
+                <NavLink to="/" end>Home</NavLink>
+                <NavLink to="/favorites">{favoritesLabel}</NavLink>
             </nav>
             <Outlet />
+            <Toast />
         </div>
     );
 };

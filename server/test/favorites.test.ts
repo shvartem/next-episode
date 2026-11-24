@@ -32,11 +32,13 @@ async function login(email: string) {
     });
     assert.equal(response.status, 200);
     const {token} = await response.json() as Session;
+
     return token;
 }
 
 function call(method: string, path: string, token?: string) {
     const headers = token ? {Authorization: `Bearer ${token}`} : undefined;
+
     return request(apiUrl(`/favorites${path}`), {method, headers});
 }
 
@@ -45,6 +47,7 @@ test('favorites survive logout and are isolated by email', async t => {
     const other = await login('other@example.com');
     const upstream = t.mock.method(globalThis, 'fetch', async (url: string) => {
         assert.equal(url, 'https://api.tvmaze.com/shows/123');
+
         return Response.json(tvMazeShow);
     });
     assert.deepEqual(await (await call('GET', '', owner)).json(), empty);
@@ -68,12 +71,14 @@ test('favorites survive logout and are isolated by email', async t => {
 test('removing favorites preserves other cards and other owners', async t => {
     const owner = await login('first@example.com');
     const other = await login('second@example.com');
+
     t.mock.method(globalThis, 'fetch', async (url: string) =>
         Response.json({...tvMazeShow, id: Number(new URL(url).pathname.split('/').at(-1))}));
 
     for (const [id, user] of [[123, owner], [124, owner], [123, other]] as const) {
         assert.equal((await call('PUT', `/${id}`, user)).status, 200);
     }
+
     assert.deepEqual(await (await call('DELETE', '/124', owner)).json(), saved);
     assert.deepEqual(await (await call('DELETE', '/123', owner)).json(), empty);
     assert.deepEqual(await (await call('GET', '', other)).json(), saved);
@@ -86,10 +91,12 @@ test('favorites require a session, validate IDs and allow retry after TVmaze err
     assert.equal((await call('PUT', '/123')).status, 401);
     assert.equal((await call('DELETE', '/123')).status, 401);
     assert.equal((await call('GET', '', 'invalid-token')).status, 401);
+
     for (const id of ['0', '-1', '1e2', '9007199254740992']) {
         assert.equal((await call('PUT', `/${id}`, owner)).status, 400);
         assert.equal((await call('DELETE', `/${id}`, owner)).status, 400);
     }
+
     assert.equal(upstream.mock.callCount(), 0);
 
     upstream.mock.mockImplementationOnce(async () => new Response(null, {status: 404}));

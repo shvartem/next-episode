@@ -7,20 +7,30 @@ import {toastNotify} from '~/tasks/toastNotify';
 import {loadFavorites} from './tasks/loadFavorites';
 
 export const useRootLayout = () => {
-    const count = useStore(favoritesStore, state => state.items?.length);
-    const token = useStore(sessionStore, state => state.session?.token);
+    const count = useStore(favoritesStore, (state) => state.items?.length);
+    const token = useStore(sessionStore, (state) => state.session?.token);
+
     useEffect(() => {
-        if (!token) return;
+        if (!token) {
+            return;
+        }
+
         const controller = new AbortController();
+
         void loadFavorites(token, controller.signal);
-        return () => controller.abort();
+
+        return () => {
+            controller.abort();
+        };
     }, [token]);
 
-    const email = useStore(sessionStore, state => state.session?.email);
+    const email = useStore(sessionStore, (state) => state.session?.email);
+
     const [isLoggingOut, setIsLoggingOut] = useState(false);
 
     const handleLogout = async () => {
         setIsLoggingOut(true);
+
         try {
             await logout();
         } catch {
@@ -31,5 +41,6 @@ export const useRootLayout = () => {
     };
 
     const favoritesLabel = count === undefined ? 'Favorites' : `Favorites (${count})`;
+
     return {favoritesLabel, email, isLoggingOut, handleLogout};
 };

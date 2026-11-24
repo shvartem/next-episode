@@ -5,17 +5,22 @@ import {sessionStore} from '~/stores/sessionStore';
 import {login} from '~/tasks/login';
 
 export function useLoginPage() {
-    const isLoggedIn = useStore(sessionStore, state => state.session !== null);
+    const isLoggedIn = useStore(sessionStore, (state) => state.session !== null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState('');
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+
         const email = new FormData(event.currentTarget).get('email');
-        if (isSubmitting || typeof email !== 'string') return;
+
+        if (isSubmitting || typeof email !== 'string') {
+            return;
+        }
 
         setIsSubmitting(true);
         setError('');
+
         try {
             await login(email);
         } catch {

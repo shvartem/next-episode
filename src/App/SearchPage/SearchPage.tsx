@@ -37,9 +37,7 @@ export const SearchPage = () => {
     return (
         <div>
             <h1 className={styles.title}>Search Page</h1>
-
             <SearchForm search={search} hint={searchHint} onChange={handleSearch} />
-
             {renderContent()}
         </div>
     );

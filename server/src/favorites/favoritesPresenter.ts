@@ -16,6 +16,7 @@ export const favoritesPresenter = {
 
     async add(ownerId: string, showId: number): Promise<FavoritesResult | null> {
         const items = await addFavorite(ownerId, showId, getTvMazeShow);
+
         return items === null ? null : toFavoritesResult(items);
     },
 

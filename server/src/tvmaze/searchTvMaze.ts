@@ -14,11 +14,13 @@ const cache: Record<string, Entry> = {};
 
 async function fetchShows(url: URL): Promise<Show[]> {
     const response = await fetch(url, {signal: AbortSignal.timeout(15000)});
+
     if (!response.ok) {
         throw new Error(`TVmaze returned ${response.status}`);
     }
 
     const data = await response.json() as TvMazeSearchResult[];
+
     return data.map(({show}) => toShow(show));
 }
 
@@ -27,9 +29,11 @@ export function searchTvMaze(query: string): Promise<Show[]> {
     url.searchParams.set('q', query.trim());
     const key = url.href;
     const existing = cache[key];
+
     if (existing && existing.expiresAt > Date.now()) {
         const state = existing.expiresAt === Infinity ? 'JOIN pending request' : 'HIT';
         log('INFO', 'CACHE', `${state} ${url.search}`);
+
         return existing.result;
     }
 
@@ -37,11 +41,15 @@ export function searchTvMaze(query: string): Promise<Show[]> {
     const started = performance.now();
     const entry: Entry = {result: fetchShows(url), expiresAt: Infinity};
     cache[key] = entry;
+
     entry.result.then((shows) => {
         entry.expiresAt = Date.now() + TTL;
         log('OK', 'TVmaze', `${url.search} | ${shows.length} shows | ${Math.round(performance.now() - started)} ms`);
+
         setTimeout(() => {
-            if (cache[key] === entry) delete cache[key];
+            if (cache[key] === entry) {
+                delete cache[key];
+            }
         }, TTL).unref();
     }, (error: unknown) => {
         delete cache[key];

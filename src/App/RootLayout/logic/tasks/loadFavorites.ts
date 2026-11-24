@@ -7,8 +7,13 @@ export async function loadFavorites(token: string, signal: AbortSignal) {
 
     try {
         const {items} = await favoritesRepository.getFavorites(token, signal);
-        if (isCurrentSession()) favoritesStore.setState({items, loadFailed: false});
+
+        if (isCurrentSession()) {
+            favoritesStore.setState({items, loadFailed: false});
+        }
     } catch {
-        if (isCurrentSession()) favoritesStore.setState({loadFailed: true});
+        if (isCurrentSession()) {
+            favoritesStore.setState({loadFailed: true});
+        }
     }
 }

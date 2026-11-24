@@ -5,6 +5,8 @@ export function toastNotify(message: string, durationMs: number): void {
     toastStore.setState({toast});
 
     setTimeout(() => {
-        if (toastStore.getState().toast === toast) toastStore.setState({toast: null});
+        if (toastStore.getState().toast === toast) {
+            toastStore.setState({toast: null});
+        }
     }, durationMs);
 }

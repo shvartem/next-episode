@@ -8,7 +8,10 @@ export async function addFavorite(
 ) {
     if (!favoritesStore.has(ownerId, showId)) {
         const show = await loadShow(showId);
-        if (show === null) return null;
+
+        if (show === null) {
+            return null;
+        }
 
         favoritesStore.add(ownerId, show);
     }

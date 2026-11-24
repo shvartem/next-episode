@@ -13,6 +13,7 @@ export const RootLayout = () => {
             <nav className={styles.navigation}>
                 <NavLink to="/" end>Home</NavLink>
                 {email && <NavLink to="/favorites">{favoritesLabel}</NavLink>}
+
                 {email ? (
                     <>
                         <span className={styles.email}>{email}</span>
@@ -20,6 +21,7 @@ export const RootLayout = () => {
                     </>
                 ) : <NavLink to="/login">Log in</NavLink>}
             </nav>
+
             <Outlet />
             <Toast />
         </div>

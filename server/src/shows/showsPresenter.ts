@@ -6,5 +6,6 @@ export async function presentShows(query: SearchQuery): Promise<SearchResult> {
     const {counts, ...page} = await searchShows(query, searchTvMaze);
     const genres = [...counts].map(([name, count]) => ({name, count}))
         .toSorted((a, b) => a.name.localeCompare(b.name));
+
     return {...page, genres};
 }

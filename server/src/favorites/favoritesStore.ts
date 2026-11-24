@@ -5,6 +5,7 @@ const favorite: Partial<Record<string, Record<number, Show>>> = Object.create(nu
 export const favoritesStore = {
     list(ownerId: string): Show[] {
         const collection = favorite[ownerId];
+
         return collection ? Object.values(collection) : [];
     },
 
@@ -19,9 +20,15 @@ export const favoritesStore = {
 
     remove(ownerId: string, showId: number): void {
         const collection = favorite[ownerId];
-        if (!collection) return;
+
+        if (!collection) {
+            return;
+        }
 
         delete collection[showId];
-        if (Object.keys(collection).length === 0) delete favorite[ownerId];
+
+        if (Object.keys(collection).length === 0) {
+            delete favorite[ownerId];
+        }
     },
 };

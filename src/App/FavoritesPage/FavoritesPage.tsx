@@ -8,10 +8,25 @@ export const FavoritesPage = () => {
     const {isLoggedIn, items, hasFavorites, isLoading, loadError} = useFavoritesPage();
 
     const renderContent = () => {
-        if (!isLoggedIn) return <p><Link to="/login">Log in</Link> to see your favorites.</p>;
-        if (isLoading) return <p role="status">Loading favorites…</p>;
-        if (loadError) return <p role="alert">{loadError}</p>;
-        if (!hasFavorites) return <p>No favorites yet.</p>;
+        if (!isLoggedIn) {
+            return (
+                <p>
+                    <Link to="/login">Log in</Link> to see your favorites.
+                </p>
+            );
+        }
+
+        if (isLoading) {
+            return <p role="status">Loading favorites…</p>;
+        }
+
+        if (loadError) {
+            return <p role="alert">{loadError}</p>;
+        }
+
+        if (!hasFavorites) {
+            return <p>No favorites yet.</p>;
+        }
 
         return <TvShowsList list={items} />;
     };

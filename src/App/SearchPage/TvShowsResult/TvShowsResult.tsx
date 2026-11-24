@@ -28,7 +28,6 @@ export const TvShowsResult = (props: Props) => {
             {hasItems ? (
                 <>
                     <TvShowsList list={items} />
-
                     <Pagination page={page} pagesCount={pagesCount} onChange={onPageChange} />
                 </>
             ) : (

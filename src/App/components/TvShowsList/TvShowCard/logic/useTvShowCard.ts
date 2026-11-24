@@ -26,16 +26,21 @@ export const useTvShowCard = (props: Props) => {
     const isFavorite = useStore(favoritesStore, state => state.items?.some(item => item.id === show.id) ?? false);
 
     const isLoggedIn = useStore(sessionStore, state => state.session !== null);
+
     const isFavoritesBusy = useStore(favoritesStore, state => state.items === null || state.isUpdating);
 
     const handleFavoriteClick = async () => {
         const update = toggleFavorite(show.id);
 
-        if (!update) return;
+        if (!update) {
+            return;
+        }
 
         const result = await update;
 
-        if (!result) return;
+        if (!result) {
+            return;
+        }
 
         toastNotify(FAVORITE_UPDATE_MESSAGES[result], FAVORITE_TOAST_DURATION_MS);
     };

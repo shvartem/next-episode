@@ -13,7 +13,10 @@ export function setupTestServer() {
     });
 
     after(async () => {
-        if (!server.listening) return;
+        if (!server.listening) {
+            return;
+        }
+
         const closed = once(server, 'close');
         server.close();
         await closed;
@@ -22,6 +25,7 @@ export function setupTestServer() {
     return (path: string) => {
         const address = server.address();
         assert.ok(address && typeof address === 'object');
+
         return `http://127.0.0.1:${address.port}/api${path}`;
     };
 }

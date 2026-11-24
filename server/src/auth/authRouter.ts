@@ -10,8 +10,10 @@ authRouter.use((_req, res, next) => {
 
 authRouter.post('/', json(), (req, res) => {
     const email = typeof req.body?.email === 'string' ? req.body.email.trim().toLowerCase() : '';
+
     if (email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         res.status(400).json({error: 'Invalid email'});
+
         return;
     }
 
@@ -20,8 +22,10 @@ authRouter.post('/', json(), (req, res) => {
 
 authRouter.get('/', (req, res) => {
     const session = getSession(req);
+
     if (!session) {
         res.status(401).json({error: 'Login required'});
+
         return;
     }
 
@@ -30,6 +34,10 @@ authRouter.get('/', (req, res) => {
 
 authRouter.delete('/', (req, res) => {
     const session = getSession(req);
-    if (session) deleteSession(session.token);
+
+    if (session) {
+        deleteSession(session.token);
+    }
+
     res.json(null);
 });

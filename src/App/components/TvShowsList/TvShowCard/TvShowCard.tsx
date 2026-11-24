@@ -28,6 +28,7 @@ export const TvShowCard = (props: Props) => {
                             {name}
                         </a>
                     </h2>
+
                     <button
                         className={styles.favoriteButton}
                         type="button"
@@ -41,7 +42,6 @@ export const TvShowCard = (props: Props) => {
                 </div>
 
                 {details && <p className={styles.details}>{details}</p>}
-
                 {hasRating && <p className={styles.rating}>Rating: {rating}</p>}
 
                 {hasGenres && (

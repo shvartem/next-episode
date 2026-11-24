@@ -12,8 +12,10 @@ export const favoritesRouter = Router();
 favoritesRouter.use<unknown, unknown, unknown, unknown, OwnerLocals>((req, res, next) => {
     res.set('Cache-Control', 'no-store');
     const session = getSession(req);
+
     if (!session) {
         res.status(401).json({error: 'Login required'});
+
         return;
     }
 
@@ -23,8 +25,10 @@ favoritesRouter.use<unknown, unknown, unknown, unknown, OwnerLocals>((req, res, 
 
 favoritesRouter.param('showId', (_req, res, next, value: string) => {
     const showId = Number(value);
+
     if (!/^\d+$/.test(value) || !Number.isSafeInteger(showId) || showId < 1) {
         res.status(400).json({error: 'Invalid show ID'});
+
         return;
     }
 
@@ -44,8 +48,10 @@ favoritesRouter.put<ShowParams, MutationResult, unknown, unknown, OwnerLocals>('
 
     try {
         const result = await favoritesPresenter.add(ownerId, showId);
+
         if (result === null) {
             res.status(404).json({error: 'Show not found'});
+
             return;
         }
 

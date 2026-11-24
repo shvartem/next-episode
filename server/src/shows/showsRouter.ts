@@ -5,9 +5,11 @@ export const showsRouter = Router();
 
 showsRouter.get('/shows', async (req, res) => {
     const {q, genre, page = '1'} = req.query;
+
     if (typeof q !== 'string' || !q.trim() || (genre !== undefined && typeof genre !== 'string')
         || typeof page !== 'string' || !/^\d+$/.test(page) || !Number.isSafeInteger(Number(page)) || Number(page) < 1) {
         res.status(400).json({error: 'Invalid search parameters'});
+
         return;
     }
 

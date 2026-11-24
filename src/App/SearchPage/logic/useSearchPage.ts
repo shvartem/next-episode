@@ -8,9 +8,12 @@ import {searchShows} from './tasks/searchShows';
 const SUBMIT_DELAY = 300;
 
 const readPage = (value: string | null) => {
-    if (!value || !/^\d+$/.test(value)) return 1;
+    if (!value || !/^\d+$/.test(value)) {
+        return 1;
+    }
 
     const page = Number(value);
+
     return Number.isSafeInteger(page) && page > 0 ? page : 1;
 };
 
@@ -27,12 +30,17 @@ export const useSearchPage = () => {
     const currentResponse = response?.locationKey === key ? response : null;
 
     useEffect(() => {
-        if (!q) return;
+        if (!q) {
+            return;
+        }
 
         const abort = new AbortController();
         const load = async () => {
             const [error, result] = await searchShows({q, genre, page}, abort.signal);
-            if (abort.signal.aborted) return;
+
+            if (abort.signal.aborted) {
+                return;
+            }
 
             if (error === null) {
                 setResponse({locationKey: key, result});
@@ -43,7 +51,10 @@ export const useSearchPage = () => {
 
         // Typing replaces the location. Filters, pagination and browser history load immediately.
         const timeout = navigationType === 'REPLACE' ? setTimeout(load, SUBMIT_DELAY) : undefined;
-        if (timeout === undefined) void load();
+
+        if (timeout === undefined) {
+            void load();
+        }
 
         return () => {
             clearTimeout(timeout);
@@ -54,14 +65,23 @@ export const useSearchPage = () => {
     const updateParams = (next: SearchQuery, replace = false) => {
         const nextParams = new URLSearchParams(params);
 
-        if (next.q) nextParams.set('q', next.q);
-        else nextParams.delete('q');
+        if (next.q) {
+            nextParams.set('q', next.q);
+        } else {
+            nextParams.delete('q');
+        }
 
-        if (next.genre) nextParams.set('genre', next.genre);
-        else nextParams.delete('genre');
+        if (next.genre) {
+            nextParams.set('genre', next.genre);
+        } else {
+            nextParams.delete('genre');
+        }
 
-        if (next.page > 1) nextParams.set('page', String(next.page));
-        else nextParams.delete('page');
+        if (next.page > 1) {
+            nextParams.set('page', String(next.page));
+        } else {
+            nextParams.delete('page');
+        }
 
         if (nextParams.toString() !== params.toString()) {
             setParams(nextParams, {replace, flushSync: replace});

@@ -6,12 +6,14 @@ const sessions: Partial<Record<string, string>> = Object.create(null);
 export function createSession(email: string) {
     const token = randomUUID();
     sessions[token] = email;
+
     return {email, token};
 }
 
 export function getSession(req: Pick<Request, 'get'>) {
     const token = req.get('Authorization')?.match(/^Bearer (\S+)$/i)?.[1];
     const email = token && sessions[token];
+
     return token && email ? {email, token} : null;
 }
 

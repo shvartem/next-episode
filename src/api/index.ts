@@ -27,7 +27,11 @@ export const sessionRepository = {
 export const showsRepository = {
     getShowsList: ({q, page, genre}: SearchQuery, signal?: AbortSignal) => {
         const queryParams: Record<string, string> = {q, page: String(page)};
-        if (genre !== null) queryParams.genre = genre;
+
+        if (genre !== null) {
+            queryParams.genre = genre;
+        }
+
         return api.createRequest<SearchResult>({endpoint: '/shows', queryParams, signal});
     },
 };

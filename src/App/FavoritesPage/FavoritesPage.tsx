@@ -1,11 +1,12 @@
 import {Link} from 'react-router';
+import {TvShowCard} from '../components/TvShowCard/TvShowCard';
 import {TvShowsList} from '../components/TvShowsList/TvShowsList';
 import {useFavoritesPage} from './logic/useFavoritesPage';
 
 import styles from './FavoritesPage.module.css';
 
 export const FavoritesPage = () => {
-    const {isLoggedIn, loginState, items, hasFavorites, isLoading, loadError} = useFavoritesPage();
+    const {isLoggedIn, loginState, items, hasFavorites, isLoading, loadError, onFavoriteClick} = useFavoritesPage();
 
     const renderContent = () => {
         if (!isLoggedIn) {
@@ -28,7 +29,7 @@ export const FavoritesPage = () => {
             return <p>No favorites yet.</p>;
         }
 
-        return <TvShowsList list={items} />;
+        return <TvShowsList list={items} renderCard={(show) => <TvShowCard card={show} onFavoriteClick={onFavoriteClick} />} />;
     };
 
     return (

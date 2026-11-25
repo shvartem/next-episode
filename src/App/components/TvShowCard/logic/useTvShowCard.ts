@@ -3,18 +3,7 @@ import {createPath, useLocation} from 'react-router';
 import {useStore} from 'zustand';
 import {sessionStore} from '~/stores/sessionStore';
 import {favoritesStore} from '~/stores/favoritesStore';
-import type {ToastTone} from '~/stores/toastStore';
-import {toastNotify} from '~/tasks/toastNotify';
-import {toggleFavorite} from './tasks/toggleFavorite/toggleFavorite';
-import type {FavoriteUpdateResult} from './tasks/toggleFavorite/types';
 import type {Props} from '../types';
-
-const FAVORITE_TOAST_DURATION_MS = 4_000;
-
-const FAVORITE_UPDATE_TOASTS: Record<FavoriteUpdateResult, {message: (name: string) => string; tone: ToastTone}> = {
-    added: {message: name => `“${name}” added to favorites.`, tone: 'success'},
-    removed: {message: name => `“${name}” removed from favorites.`, tone: 'warning'},
-};
 
 const getPlainText = (html: string) => {
     const htmlWithSpaces = html.replace(/<\/p>|<br\s*\/?>/gi, ' ');
@@ -23,7 +12,7 @@ const getPlainText = (html: string) => {
 };
 
 export const useTvShowCard = (props: Props) => {
-    const {card: show} = props;
+    const {card: show, onFavoriteClick} = props;
     const [isUpdating, setIsUpdating] = useState(false);
     const loginPromptId = useId();
     const loginState = {returnTo: createPath(useLocation())};
@@ -41,17 +30,10 @@ export const useTvShowCard = (props: Props) => {
 
         setIsUpdating(true);
 
-        const [error, result] = await toggleFavorite(show.id).finally(() => setIsUpdating(false));
-
-        if (error !== null) {
-            toastNotify(`Could not update favorites for “${show.name}”. Try again.`, FAVORITE_TOAST_DURATION_MS);
-
-            return;
-        }
-
-        if (result !== 'skipped') {
-            const {message, tone} = FAVORITE_UPDATE_TOASTS[result];
-            toastNotify(message(show.name), FAVORITE_TOAST_DURATION_MS, tone);
+        try {
+            await onFavoriteClick(show);
+        } finally {
+            setIsUpdating(false);
         }
     };
 

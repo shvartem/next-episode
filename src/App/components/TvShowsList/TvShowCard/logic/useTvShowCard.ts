@@ -1,4 +1,5 @@
-import {useState} from 'react';
+import {useId, useState} from 'react';
+import {createPath, useLocation} from 'react-router';
 import {useStore} from 'zustand';
 import {sessionStore} from '~/stores/sessionStore';
 import {favoritesStore} from '~/stores/favoritesStore';
@@ -24,6 +25,8 @@ const getPlainText = (html: string) => {
 export const useTvShowCard = (props: Props) => {
     const {card: show} = props;
     const [isUpdating, setIsUpdating] = useState(false);
+    const loginPromptId = useId();
+    const loginState = {returnTo: createPath(useLocation())};
 
     const isFavorite = useStore(favoritesStore, state => state.items?.some(item => item.id === show.id) ?? false);
 
@@ -69,7 +72,10 @@ export const useTvShowCard = (props: Props) => {
         summary: show.summary ? getPlainText(show.summary) : '',
         favoriteLabel: isLoggedIn ? `Favorite ${show.name}` : 'Log in to add favorites',
         isFavorite,
-        isFavoriteDisabled: !isLoggedIn || !areFavoritesLoaded || isUpdating,
+        favoritePressed: isLoggedIn ? isFavorite : undefined,
+        favoriteLoginPromptId: isLoggedIn ? undefined : loginPromptId,
+        loginState,
+        isFavoriteDisabled: isLoggedIn && (!areFavoritesLoaded || isUpdating),
         handleFavoriteClick,
     };
 };

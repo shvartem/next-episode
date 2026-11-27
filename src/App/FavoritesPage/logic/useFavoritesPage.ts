@@ -1,4 +1,4 @@
-import {updateFavoriteWithToast} from '../../handlers/updateFavoriteWithToast';
+import {removeFavoriteWithToast} from '../../handlers/updateFavoriteWithToast';
 import {createPath, useLocation} from 'react-router';
 
 import type {Show} from '~/api';
@@ -20,7 +20,7 @@ export const useFavoritesPage = () => {
     const list = items ?? EMPTY_ITEMS;
 
     return {
-        onFavoriteClick: updateFavoriteWithToast,
+        onFavoriteClick: removeFavoriteWithToast,
         isLoggedIn,
         loginState,
         items: list,

@@ -1,5 +1,5 @@
 import type {SearchQuery} from '~/api';
-import {updateFavoriteWithToast} from '../../handlers/updateFavoriteWithToast';
+import {toggleFavoriteWithToast} from '../../handlers/updateFavoriteWithToast';
 import {useSearchPageParams} from './useSearchPageParams';
 import {useShouldLoadSearchLocation} from './useShouldLoadSearchLocation';
 import {useShowSearch} from './useShowSearch';
@@ -21,7 +21,7 @@ export const useSearchPage = () => {
         isLoading,
         result,
         hasMatches: (result?.totalCount ?? 0) > 0,
-        onFavoriteClick: updateFavoriteWithToast,
+        onFavoriteClick: toggleFavoriteWithToast,
         selectedGenre: genre,
         searchHint: 'Results update automatically.',
         handleSearch: (value: string) => updateSearch({q: value, genre: null, page: 1}, true),

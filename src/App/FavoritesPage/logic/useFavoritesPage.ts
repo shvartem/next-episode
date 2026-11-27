@@ -24,7 +24,6 @@ export const useFavoritesPage = () => {
         isLoggedIn,
         loginState,
         items: list,
-        hasFavorites: list.length > 0,
         isLoading: items === null && !loadFailed,
         loadError,
     };

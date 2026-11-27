@@ -3,6 +3,7 @@ import {useLocation, useNavigationType, useSearchParams} from 'react-router';
 
 import type {SearchQuery} from '~/api';
 import type {SearchResponse} from '../types';
+import {updateFavoriteWithToast} from '../../handlers/updateFavoriteWithToast';
 import {searchShows} from './tasks/searchShows';
 
 const SUBMIT_DELAY = 300;
@@ -88,11 +89,15 @@ export const useSearchPage = () => {
         }
     };
 
+    const result = currentResponse?.result;
+
     return {
         search,
         error: currentResponse?.error,
         isLoading: Boolean(q) && !currentResponse,
-        result: currentResponse?.result,
+        result,
+        hasMatches: (result?.totalCount ?? 0) > 0,
+        onFavoriteClick: updateFavoriteWithToast,
         selectedGenre: genre,
         searchHint: 'Results update automatically.',
         handleSearch: (value: string) => updateParams({q: value, genre: null, page: 1}, true),

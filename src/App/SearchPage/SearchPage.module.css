@@ -10,3 +10,11 @@
     margin: 20px 0;
   }
 }
+
+.results {
+  padding: 24px 24px 40px;
+
+  @media (max-width: 600px) {
+    padding: 16px 12px 32px;
+  }
+}

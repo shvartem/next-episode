@@ -1,4 +1,9 @@
-import {TvShowsResult} from './TvShowsResult/TvShowsResult';
+import {FavoriteButton} from '../components/FavoriteButton/FavoriteButton';
+import {TvShowCard} from '../components/TvShowCard/TvShowCard';
+import {TvShowsCollection} from '../components/TvShowsCollection/TvShowsCollection';
+import {EmptyList} from './EmptyList/EmptyList';
+import {GenreFilter} from './GenreFilter/GenreFilter';
+import {Pagination} from './Pagination/Pagination';
 import {SearchForm} from './SearchForm/SearchForm';
 import {Loader} from './Loader/Loader';
 import {Error} from './Error/Error';
@@ -8,7 +13,8 @@ import styles from './SearchPage.module.css';
 
 export const SearchPage = () => {
     const {
-        search, error, isLoading, result, searchHint, selectedGenre, handleSearch, handleGenreChange, handlePageChange,
+        search, error, isLoading, result, hasMatches, searchHint, selectedGenre, handleSearch, handleGenreChange, handlePageChange,
+        onFavoriteClick,
     } = useSearchPage();
 
     const renderContent = () => {
@@ -22,11 +28,25 @@ export const SearchPage = () => {
 
         if (result) {
             return (
-                <TvShowsResult
-                    result={result}
-                    selectedGenre={selectedGenre}
-                    onGenreChange={handleGenreChange}
-                    onPageChange={handlePageChange}
+                <TvShowsCollection
+                    className={styles.results}
+                    list={result.items}
+                    controls={hasMatches && (
+                        <GenreFilter
+                            genres={result.genres}
+                            totalCount={result.totalCount}
+                            selectedGenre={selectedGenre}
+                            onChange={handleGenreChange}
+                        />
+                    )}
+                    emptyState={<EmptyList />}
+                    pagination={<Pagination page={result.page} pagesCount={result.pagesCount} onChange={handlePageChange} />}
+                    renderCard={(show) => (
+                        <TvShowCard
+                            card={show}
+                            favoriteAction={<FavoriteButton show={show} onClick={onFavoriteClick} />}
+                        />
+                    )}
                 />
             );
         }

@@ -19,7 +19,7 @@ export const useRootLayout = () => {
 
         const controller = new AbortController();
 
-        void loadFavorites(token, controller.signal);
+        loadFavorites(token, controller.signal);
 
         return () => {
             controller.abort();

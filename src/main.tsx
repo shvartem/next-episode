@@ -7,7 +7,7 @@ import './index.css';
 import {restoreSession} from './tasks/restoreSession';
 import {App} from './App/App';
 
-void restoreSession();
+ restoreSession();
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>

@@ -1,17 +1,16 @@
 import {useEffect, useState} from 'react';
 import {createPath, matchPath, useLocation} from 'react-router';
-import {useStore} from 'zustand';
-import {favoritesStore} from '~/stores/favoritesStore';
-import {sessionStore} from '~/stores/sessionStore';
 import {logout} from '~/tasks/logout';
 import {toastNotify} from '~/tasks/toastNotify';
 import {loadFavorites} from './tasks/loadFavorites';
+import {useFavoritesStore} from '~/App/hooks/useFavoritesStore';
+import {useSessionStore} from '~/App/hooks/useSessionStore';
 
 export const useRootLayout = () => {
     const location = useLocation();
     const loginState = matchPath('/login', location.pathname) ? location.state : {returnTo: createPath(location)};
-    const count = useStore(favoritesStore, (state) => state.items?.length);
-    const token = useStore(sessionStore, (state) => state.session?.token);
+    const count = useFavoritesStore((state) => state.items?.length);
+    const token = useSessionStore((state) => state.session?.token);
 
     useEffect(() => {
         if (!token) {
@@ -27,7 +26,7 @@ export const useRootLayout = () => {
         };
     }, [token]);
 
-    const email = useStore(sessionStore, (state) => state.session?.email);
+    const email = useSessionStore((state) => state.session?.email);
 
     const [isLoggingOut, setIsLoggingOut] = useState(false);
 

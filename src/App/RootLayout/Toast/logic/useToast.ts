@@ -1,4 +1,3 @@
-import {useStore} from 'zustand';
-import {toastStore} from '~/stores/toastStore';
+import {useToastStore} from '~/App/hooks/useToastStore';
 
-export const useToast = () => useStore(toastStore, state => state.toast);
+export const useToast = () => useToastStore((state) => state.toast);

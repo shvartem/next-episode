@@ -1,7 +1,7 @@
 import {createStore} from 'zustand/vanilla';
 import type {Show} from '~/api';
 
-interface FavoritesState {
+export interface FavoritesState {
     items: Show[] | null;
     loadFailed: boolean;
 }

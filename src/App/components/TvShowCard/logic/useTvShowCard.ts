@@ -1,9 +1,8 @@
 import {useId, useState} from 'react';
 import {createPath, useLocation} from 'react-router';
-import {useStore} from 'zustand';
-import {sessionStore} from '~/stores/sessionStore';
-import {favoritesStore} from '~/stores/favoritesStore';
 import type {Props} from '../types';
+import {useFavoritesStore} from '~/App/hooks/useFavoritesStore';
+import {useSessionStore} from '~/App/hooks/useSessionStore';
 
 const getPlainText = (html: string) => {
     const htmlWithSpaces = html.replace(/<\/p>|<br\s*\/?>/gi, ' ');
@@ -17,11 +16,11 @@ export const useTvShowCard = (props: Props) => {
     const loginPromptId = useId();
     const loginState = {returnTo: createPath(useLocation())};
 
-    const isFavorite = useStore(favoritesStore, state => state.items?.some(item => item.id === show.id) ?? false);
+    const isFavorite = useFavoritesStore((state) => state.items?.some((item) => item.id === show.id) ?? false);
 
-    const isLoggedIn = useStore(sessionStore, state => state.session !== null);
+    const isLoggedIn = useSessionStore((state) => state.session !== null);
 
-    const areFavoritesLoaded = useStore(favoritesStore, state => state.items !== null);
+    const areFavoritesLoaded = useFavoritesStore((state) => state.items !== null);
 
     const handleFavoriteClick = async () => {
         if (isUpdating || !isLoggedIn || !areFavoritesLoaded) {

@@ -1,18 +1,23 @@
 import {useState} from 'react';
 import type {FormEvent} from 'react';
 import {matchPath, parsePath, useLocation} from 'react-router';
-import {useStore} from 'zustand';
-import {sessionStore} from '~/stores/sessionStore';
+import {useSessionStore} from '~/App/hooks/useSessionStore';
 import {login} from '~/tasks/login';
 
 export function useLoginPage() {
     const {state} = useLocation();
     const returnTo: unknown = state?.returnTo;
     const pathname = typeof returnTo === 'string' ? parsePath(returnTo).pathname : undefined;
-    const redirectTo = typeof returnTo === 'string' && pathname?.startsWith('/') && !pathname.startsWith('//')
-        && !pathname.includes('\\') && !matchPath('/login', pathname) ? returnTo : '/';
+    const redirectTo =
+        typeof returnTo === 'string' &&
+        pathname?.startsWith('/') &&
+        !pathname.startsWith('//') &&
+        !pathname.includes('\\') &&
+        !matchPath('/login', pathname)
+            ? returnTo
+            : '/';
 
-    const isLoggedIn = useStore(sessionStore, (state) => state.session !== null);
+    const isLoggedIn = useSessionStore((state) => state.session !== null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState('');
 

@@ -7,4 +7,8 @@ interface Toast {
     tone: ToastTone;
 }
 
-export const toastStore = createStore<{toast: Toast | null}>(() => ({toast: null}));
+export interface ToastState {
+    toast: Toast | null;
+}
+
+export const toastStore = createStore<ToastState>(() => ({toast: null}));

@@ -7,7 +7,11 @@ export const Toast = () => {
 
     return (
         <div className={styles.root} role="status">
-            {toast && <div className={styles.message} data-tone={toast.tone}>{toast.message}</div>}
+            {toast && (
+                <div className={styles.message} data-tone={toast.tone}>
+                    {toast.message}
+                </div>
+            )}
         </div>
     );
 };

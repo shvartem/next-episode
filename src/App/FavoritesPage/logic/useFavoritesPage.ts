@@ -1,20 +1,19 @@
 import {updateFavoriteWithToast} from '../../handlers/updateFavoriteWithToast';
 import {createPath, useLocation} from 'react-router';
-import {useStore} from 'zustand';
 
 import type {Show} from '~/api';
-import {sessionStore} from '~/stores/sessionStore';
-import {favoritesStore} from '~/stores/favoritesStore';
+import {useSessionStore} from '~/App/hooks/useSessionStore';
+import {useFavoritesStore} from '~/App/hooks/useFavoritesStore';
 
 const EMPTY_ITEMS: Show[] = [];
 
 export const useFavoritesPage = () => {
     const loginState = {returnTo: createPath(useLocation())};
-    const isLoggedIn = useStore(sessionStore, (state) => state.session !== null);
+    const isLoggedIn = useSessionStore((state) => state.session !== null);
 
-    const items = useStore(favoritesStore, (state) => state.items);
+    const items = useFavoritesStore((state) => state.items);
 
-    const loadFailed = useStore(favoritesStore, (state) => state.loadFailed);
+    const loadFailed = useFavoritesStore((state) => state.loadFailed);
 
     const loadError = loadFailed ? 'Could not load favorites. Refresh the page to try again.' : null;
 

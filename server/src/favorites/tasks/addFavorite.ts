@@ -1,18 +1,28 @@
-import type {Show} from '../../../../shared/shows.ts';
+import {getTvMazeShow} from '../../tvmaze/getTvMazeShow.ts';
 import {favoritesStore} from '../favoritesStore.ts';
 
-export async function addFavorite(
-    ownerId: string,
-    showId: number,
-    loadShow: (showId: number) => Promise<Show | null>,
-) {
-    const existing = favoritesStore.get(ownerId, showId);
+export async function addFavorite(ownerId: string, showId: number) {
+    const existing = favoritesStore.getCollection(ownerId)?.[showId];
 
     if (existing) {
         return {item: existing, created: false};
     }
 
-    const show = await loadShow(showId);
+    const show = await getTvMazeShow(showId);
 
-    return show === null ? null : favoritesStore.add(ownerId, show);
+    if (show === null) {
+        return null;
+    }
+
+    // Пока шёл запрос к TVmaze, другой запрос мог изменить коллекцию пользователя.
+    const collection = favoritesStore.getCollection(ownerId);
+    const saved = collection?.[showId];
+
+    if (saved) {
+        return {item: saved, created: false};
+    }
+
+    favoritesStore.setCollection(ownerId, {...collection, [showId]: show});
+
+    return {item: show, created: true};
 }

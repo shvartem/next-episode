@@ -1,18 +1,15 @@
 import clsx from 'clsx';
 
-import {FavoriteLoginPrompt} from './FavoriteLoginPrompt/FavoriteLoginPrompt';
 import type {Props} from './types';
 import {useTvShowCard} from './logic/useTvShowCard';
 
 import styles from './TvShowCard.module.css';
 
 export const TvShowCard = (props: Props) => {
-    const {className} = props;
+    const {className, favoriteAction} = props;
 
     const {
         name, url, posterUrl, posterAlt, details, rating, hasRating, genres, hasGenres, summary,
-        favoriteLabel, isFavorite, isFavoriteDisabled, handleFavoriteClick,
-        favoritePressed, favoriteLoginPromptId, loginState,
     } = useTvShowCard(props);
 
     return (
@@ -31,20 +28,9 @@ export const TvShowCard = (props: Props) => {
                         </a>
                     </h2>
 
-                    <button
-                        className={styles.favoriteButton}
-                        type="button"
-                        aria-label={favoriteLabel}
-                        aria-pressed={favoritePressed}
-                        popoverTarget={favoriteLoginPromptId}
-                        disabled={isFavoriteDisabled}
-                        onClick={handleFavoriteClick}
-                    >
-                        <span aria-hidden="true">{isFavorite ? '★' : '☆'}</span>
-                    </button>
+                    {favoriteAction}
                 </div>
 
-                {favoriteLoginPromptId && <FavoriteLoginPrompt id={favoriteLoginPromptId} loginState={loginState} />}
                 {details && <p className={styles.details}>{details}</p>}
                 {hasRating && <p className={styles.rating}>Rating: {rating}</p>}
 

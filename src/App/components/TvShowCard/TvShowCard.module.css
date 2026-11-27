@@ -43,36 +43,6 @@
   gap: 12px;
 }
 
-.favoriteButton {
-  flex-shrink: 0;
-  inline-size: 44px;
-  block-size: 44px;
-  padding: 0;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  color: var(--text-h);
-  background: var(--bg);
-  font-size: 24px;
-  cursor: pointer;
-
-  &[aria-pressed='true'] {
-    color: #b45309;
-    background: #fff1c2;
-    border-color: #e6a827;
-
-    @media (prefers-color-scheme: dark) {
-      color: #ffd05a;
-      background: #3c2a09;
-      border-color: #a87521;
-    }
-  }
-
-  &:disabled {
-    opacity: 0.65;
-    cursor: default;
-  }
-}
-
 .name {
   margin: 0;
   font-family: var(--heading);

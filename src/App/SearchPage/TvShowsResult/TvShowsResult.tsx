@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import type {Props} from './types';
 import {EmptyList} from './EmptyList/EmptyList';
 import {GenreFilter} from './GenreFilter/GenreFilter';
+import {FavoriteButton} from '../../components/FavoriteButton/FavoriteButton';
 import {TvShowCard} from '../../components/TvShowCard/TvShowCard';
 import {TvShowsList} from '../../components/TvShowsList/TvShowsList';
 import {Pagination} from './Pagination/Pagination';
@@ -28,7 +29,16 @@ export const TvShowsResult = (props: Props) => {
 
             {hasItems ? (
                 <>
-                    <TvShowsList list={items} renderCard={(show) => <TvShowCard card={show} onFavoriteClick={onFavoriteClick} />} />
+                    <TvShowsList
+                        list={items}
+                        renderCard={(show) => (
+                            <TvShowCard
+                                card={show}
+                                favoriteAction={<FavoriteButton show={show} onClick={onFavoriteClick} />}
+                            />
+                        )}
+                    />
+
                     <Pagination page={page} pagesCount={pagesCount} onChange={onPageChange} />
                 </>
             ) : (

@@ -1,4 +1,5 @@
 import {Link} from 'react-router';
+import {FavoriteButton} from '../components/FavoriteButton/FavoriteButton';
 import {TvShowCard} from '../components/TvShowCard/TvShowCard';
 import {TvShowsList} from '../components/TvShowsList/TvShowsList';
 import {useFavoritesPage} from './logic/useFavoritesPage';
@@ -29,7 +30,17 @@ export const FavoritesPage = () => {
             return <p>No favorites yet.</p>;
         }
 
-        return <TvShowsList list={items} renderCard={(show) => <TvShowCard card={show} onFavoriteClick={onFavoriteClick} />} />;
+        return (
+            <TvShowsList
+                list={items}
+                renderCard={(show) => (
+                    <TvShowCard
+                        card={show}
+                        favoriteAction={<FavoriteButton show={show} onClick={onFavoriteClick} />}
+                    />
+                )}
+            />
+        );
     };
 
     return (

@@ -1,15 +1,13 @@
-import {removeFavoriteWithToast} from '../../handlers/updateFavoriteWithToast';
+import {useState} from 'react';
 import {createPath, useLocation} from 'react-router';
 
-import type {Show} from '~/api';
+import {toggleFavoriteWithToast} from '../../handlers/updateFavoriteWithToast';
 import {useSessionStore} from '~/App/hooks/useSessionStore';
 import {useFavoritesStore} from '~/App/hooks/useFavoritesStore';
 
-const EMPTY_ITEMS: Show[] = [];
-
 export const useFavoritesPage = () => {
     const loginState = {returnTo: createPath(useLocation())};
-    const isLoggedIn = useSessionStore((state) => state.session !== null);
+    const session = useSessionStore((state) => state.session);
 
     const items = useFavoritesStore((state) => state.items);
 
@@ -17,13 +15,24 @@ export const useFavoritesPage = () => {
 
     const loadError = loadFailed ? 'Could not load favorites. Refresh the page to try again.' : null;
 
-    const list = items ?? EMPTY_ITEMS;
+    const [snapshot, setSnapshot] = useState(() => ({session, items}));
+
+    if (snapshot.session !== session || (snapshot.items === null && items !== null)) {
+        setSnapshot({session, items});
+    }
+
+    const initialItems = snapshot.session === session ? snapshot.items : items;
+    const visibleItems = new Map((initialItems ?? []).map((item) => [item.id, item]));
+
+    for (const item of items ?? []) {
+        visibleItems.set(item.id, item);
+    }
 
     return {
-        onFavoriteClick: removeFavoriteWithToast,
-        isLoggedIn,
+        onFavoriteClick: toggleFavoriteWithToast,
+        isLoggedIn: session !== null,
         loginState,
-        items: list,
+        items: Array.from(visibleItems.values()),
         isLoading: items === null && !loadFailed,
         loadError,
     };

@@ -1,7 +1,6 @@
 import type {Show} from '~/api';
 import type {ToastTone} from '~/stores/toastStore';
 import {toastNotify} from '~/tasks/toastNotify';
-import {removeFavorite} from '~/tasks/favorites/removeFavorite';
 import {toggleFavorite} from '~/tasks/favorites/toggleFavorite';
 import type {FavoriteTaskResult, FavoriteUpdateResult} from '~/tasks/favorites/types';
 
@@ -14,10 +13,6 @@ const FAVORITE_UPDATE_TOASTS: Record<FavoriteUpdateResult, {message: (name: stri
 
 export async function toggleFavoriteWithToast(show: Show): Promise<void> {
     notifyFavoriteResult(show, await toggleFavorite(show.id));
-}
-
-export async function removeFavoriteWithToast(show: Show): Promise<void> {
-    notifyFavoriteResult(show, await removeFavorite(show.id));
 }
 
 function notifyFavoriteResult(show: Show, [error, result]: FavoriteTaskResult): void {

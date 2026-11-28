@@ -1,5 +1,5 @@
 import {Link} from 'react-router';
-import {FavoriteButton} from '../components/FavoriteButton/FavoriteButton';
+import {FavoriteCardAction} from './FavoriteCardAction/FavoriteCardAction';
 import {TvShowCard} from '../components/TvShowCard/TvShowCard';
 import {TvShowsCollection} from '../components/TvShowsCollection/TvShowsCollection';
 import {useFavoritesPage} from './logic/useFavoritesPage';
@@ -33,7 +33,7 @@ export const FavoritesPage = () => {
                 renderCard={(show) => (
                     <TvShowCard
                         card={show}
-                        favoriteAction={<FavoriteButton show={show} onClick={onFavoriteClick} />}
+                        favoriteAction={<FavoriteCardAction show={show} onClick={onFavoriteClick} />}
                     />
                 )}
             />

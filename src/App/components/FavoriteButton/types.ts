@@ -1,6 +1,3 @@
-import type {Show} from '~/api';
+import type {ComponentProps} from 'react';
 
-export interface Props {
-    show: Show;
-    onClick: (show: Show) => Promise<void>;
-}
+export type Props = ComponentProps<'button'>;

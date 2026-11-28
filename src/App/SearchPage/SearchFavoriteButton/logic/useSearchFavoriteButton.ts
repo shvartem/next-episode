@@ -4,7 +4,7 @@ import type {Props} from '../types';
 import {useFavoritesStore} from '~/App/hooks/useFavoritesStore';
 import {useSessionStore} from '~/App/hooks/useSessionStore';
 
-export const useFavoriteButton = (props: Props) => {
+export const useSearchFavoriteButton = (props: Props) => {
     const {show, onClick} = props;
     const [isUpdating, setIsUpdating] = useState(false);
     const loginPromptId = useId();

@@ -1,4 +1,4 @@
-import {FavoriteButton} from '../components/FavoriteButton/FavoriteButton';
+import {SearchFavoriteButton} from './SearchFavoriteButton/SearchFavoriteButton';
 import {TvShowCard} from '../components/TvShowCard/TvShowCard';
 import {TvShowsCollection} from '../components/TvShowsCollection/TvShowsCollection';
 import {EmptyList} from './EmptyList/EmptyList';
@@ -44,7 +44,7 @@ export const SearchPage = () => {
                     renderCard={(show) => (
                         <TvShowCard
                             card={show}
-                            favoriteAction={<FavoriteButton show={show} onClick={onFavoriteClick} />}
+                            favoriteAction={<SearchFavoriteButton show={show} onClick={onFavoriteClick} />}
                         />
                     )}
                 />

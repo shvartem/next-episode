@@ -1,0 +1,15 @@
+.restoreButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  inline-size: auto;
+  max-inline-size: 50%;
+  block-size: auto;
+  min-block-size: 44px;
+  padding-inline: 8px;
+}
+
+.restoreText {
+  font-size: 14px;
+}

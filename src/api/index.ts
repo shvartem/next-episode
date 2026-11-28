@@ -1,11 +1,59 @@
-import type {TvShow} from './types';
+import type {Session} from '../../shared/auth';
+import type {FavoriteResult, FavoritesResult} from '../../shared/favorites';
+import type {SearchQuery, SearchResult} from '../../shared/shows';
+import {createApi} from './createApi';
+import type {RequestOptions} from './types';
 
-export const getTvShowsList = ({query, signal}: {query: string; signal?: AbortSignal}): Promise<TvShow[]> => {
-    return fetch(`https://api.tvmaze.com/search/shows?q=${encodeURIComponent(query)}`, {signal}).then((r) => {
-        if (!r.ok) {
-            throw new Error(`Request failed with status ${r.status}`);
+const api = createApi({baseUrl: import.meta.env.VITE_API_BASE_URL || '/api'});
+
+export const sessionRepository = {
+    login: (email: string) => api.createRequest<Session>({
+        endpoint: '/session',
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({email}),
+    }),
+    get: (token: string) => api.createRequest<Session>({
+        endpoint: '/session',
+        headers: {Authorization: `Bearer ${token}`},
+    }),
+    logout: (token: string) => api.createRequest<null>({
+        endpoint: '/session',
+        method: 'DELETE',
+        headers: {Authorization: `Bearer ${token}`},
+    }),
+};
+
+export const showsRepository = {
+    getShowsList: ({q, page, genre}: SearchQuery, signal?: AbortSignal) => {
+        const queryParams: Record<string, string> = {q, page: String(page)};
+
+        if (genre !== null) {
+            queryParams.genre = genre;
         }
 
-        return r.json();
-    });
+        return api.createRequest<SearchResult>({endpoint: '/shows', queryParams, signal});
+    },
 };
+
+async function requestFavorites<T>(endpoint: string, method: RequestOptions['method'], token: string, signal?: AbortSignal) {
+    return api.createRequest<T>({
+        endpoint,
+        method,
+        signal,
+        headers: {Authorization: `Bearer ${token}`},
+    });
+}
+
+export const favoritesRepository = {
+    getFavorites: (token: string, signal?: AbortSignal) => requestFavorites<FavoritesResult>('/favorites', 'GET', token, signal),
+    addFavorite: (showId: number, token: string) => requestFavorites<FavoriteResult>(`/favorites/${showId}`, 'PUT', token),
+    removeFavorite: (showId: number, token: string) => api.createEmptyRequest({
+        endpoint: `/favorites/${showId}`,
+        method: 'DELETE',
+        headers: {Authorization: `Bearer ${token}`},
+    }),
+};
+
+export type {FavoriteResult, FavoritesResult} from '../../shared/favorites';
+export type {SearchQuery, SearchResult, Show} from '../../shared/shows';

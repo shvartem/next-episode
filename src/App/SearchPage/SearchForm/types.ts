@@ -1,5 +1,6 @@
 export interface Props {
     className?: string;
+    search: string;
     hint: string;
-    onSubmit: (search: string) => void;
+    onChange: (search: string) => void;
 }

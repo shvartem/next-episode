@@ -1,0 +1,11 @@
+services:
+  next-episode-api:
+    build: .
+    restart: unless-stopped
+    networks:
+      - caddy
+
+networks:
+  caddy:
+    external: true
+    name: proxy

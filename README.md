@@ -1,5 +1,7 @@
 # React + TypeScript + Vite
 
+Описание структуры и слоёв проекта: [архитектура](docs/architecture.md).
+
 This template provides a minimal setup to get React working in Vite with HMR and ESLint rules.
 
 Currently, two official plugins are available:
@@ -11,3 +13,32 @@ Currently, two official plugins are available:
 
 The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
+
+## Запуск API и фронтенда
+
+Используйте Node.js 26 из `.nvmrc` и установите зависимости командой `npm ci`.
+Запустите `npm run start:api` и `npm start` в разных терминалах.
+Vite пересылает запросы `/api` на порт 3001.
+
+API запускается отдельно командой `npm run start:api` и принимает порт из
+`PORT`. Для сборок GitHub Pages и PR-превью задайте переменную репозитория
+`VITE_API_BASE_URL` с HTTPS-адресом API, включая путь `/api` без завершающего
+слеша, и запустите сборку заново.
+
+`GET /api/shows?q=girls&genre=Drama&page=2` возвращает страницу результатов.
+Параметры `genre` и `page` необязательны. Кеш успешных поисков TVmaze живёт
+пять минут в памяти процесса API. Проверки запускаются командой `npm run test:api`.
+
+`POST /api/session` принимает JSON с полем `email` и возвращает `{ email, token }`.
+`GET /api/session` проверяет текущую сессию, а `DELETE /api/session` завершает её.
+Email используется как идентификатор без проверки владения адресом.
+
+`GET /api/favorites` читает коллекцию, `PUT /api/favorites/:showId` добавляет
+карточку, а `DELETE /api/favorites/:showId` удаляет её. GET возвращает
+`{ items, count }`, PUT возвращает `{ item }` со статусом `201 Created` при
+создании записи или `200 OK` при повторном добавлении. DELETE возвращает
+`204 No Content` без тела.
+Для доступа к избранному передаётся
+`Authorization: Bearer <token>`. Backend хранит сессии и коллекции по email
+в памяти процесса. Выход завершает сессию, а коллекция сохраняется до
+перезапуска API.

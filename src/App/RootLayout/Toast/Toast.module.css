@@ -1,0 +1,29 @@
+.root {
+  position: fixed;
+  z-index: 1;
+  inset-inline: 16px;
+  bottom: 24px;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.message {
+  min-width: 0;
+  max-inline-size: 360px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  background: var(--text-h);
+  color: var(--bg);
+  overflow-wrap: anywhere;
+
+  &[data-tone='success'] {
+    background: #166534;
+    color: #fff;
+  }
+
+  &[data-tone='warning'] {
+    background: #92400e;
+    color: #fff;
+  }
+}

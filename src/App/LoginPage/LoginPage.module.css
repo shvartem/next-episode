@@ -1,0 +1,11 @@
+.form {
+  display: grid;
+  gap: 12px;
+  width: min(320px, calc(100% - 32px));
+  margin-inline: auto;
+  text-align: left;
+
+  input, button {
+    padding: 8px 12px;
+  }
+}

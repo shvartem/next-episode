@@ -1,0 +1,49 @@
+import {Link} from 'react-router';
+import {FavoriteCardAction} from './FavoriteCardAction/FavoriteCardAction';
+import {TvShowCard} from '../components/TvShowCard/TvShowCard';
+import {TvShowsCollection} from '../components/TvShowsCollection/TvShowsCollection';
+import {useFavoritesPage} from './logic/useFavoritesPage';
+
+import styles from './FavoritesPage.module.css';
+
+export const FavoritesPage = () => {
+    const {isLoggedIn, loginState, items, isLoading, loadError, onFavoriteClick} = useFavoritesPage();
+
+    const renderContent = () => {
+        if (!isLoggedIn) {
+            return (
+                <p>
+                    <Link to="/login" state={loginState}>Log in</Link> to see your favorites.
+                </p>
+            );
+        }
+
+        if (isLoading) {
+            return <p role="status">Loading favorites…</p>;
+        }
+
+        if (loadError) {
+            return <p role="alert">{loadError}</p>;
+        }
+
+        return (
+            <TvShowsCollection
+                list={items}
+                emptyState={<p>No favorites yet.</p>}
+                renderCard={(show) => (
+                    <TvShowCard
+                        card={show}
+                        favoriteAction={<FavoriteCardAction show={show} onClick={onFavoriteClick} />}
+                    />
+                )}
+            />
+        );
+    };
+
+    return (
+        <main className={styles.root}>
+            <h1 className={styles.title}>Favorites</h1>
+            {renderContent()}
+        </main>
+    );
+};

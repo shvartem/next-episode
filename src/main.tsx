@@ -4,13 +4,13 @@ import {createRoot} from 'react-dom/client';
 import 'modern-normalize/modern-normalize.css';
 import './index.css';
 
-import {ApiProvider} from './ApiProvider/ApiProvider';
+import {restoreSession} from './tasks/restoreSession';
 import {App} from './App/App';
+
+ restoreSession();
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
-        <ApiProvider>
-            <App />
-        </ApiProvider>
+        <App />
     </StrictMode>,
 );
